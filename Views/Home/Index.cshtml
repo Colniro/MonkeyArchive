@@ -2,6 +2,72 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    
+<link rel="stylesheet" href="~/css/site.css">
+
+<div class="text-center page-content">
+    <div class="container">
+        <header>
+            <div class="logo-group">
+                <a href="index.html"><img src="~/images/village.png" alt="Monkey Archive Logo"></a>
+                
+                <a href="index.html">Monkey Archive</a>
+            </div>
+
+            <nav>
+                <a class="nav-link" href="towers.html">Towers</a>
+                <a class="nav-link" href="bloons.html">Bloons</a>
+                <a class="login-btn" href="login.html">Log In</a>
+            </nav>
+        </header>
+    </div>
 </div>
+
+<section class="hero">
+    <img src="~/images/red_bloon.png" class="bloon bloon-a" alt="">
+    <img src="~/images/red_bloon.png" class="bloon bloon-b" alt="">
+    <img src="~/images/camo.png" class="decor-blob" alt="">
+
+    <div class="container hero-container">
+        <h1 class="hero-title">BTD6 Towers &amp; Bloons</h1>
+        <p class="hero-subtitle">The most important stats clear and organized</p>
+
+        <div class="hero-buttons">
+            <a href="towers.html" class="btn btn-primary">view Towers</a>
+            <a href="bloons.html" class="btn btn-outline">view Bloons</a>
+        </div>
+
+        <div class="categories">
+            <div class="mascots">
+                <img src="~/images/dart_monkey.png" alt="Primary">
+                <img src="~/images/sniper_monkey.png" class="tall" alt="Military">
+                <img src="~/images/druid_monkey.png" alt="Magic">
+                <img src="~/images/engineer_monkey.png" class="tall" alt="Support">
+            </div>
+            <div class="categories-line">
+                <span class="categories-label">Categories</span>
+            </div>
+
+            <div class="categories-cards">
+                <div class="spacer"></div>
+                <div class="categories-grid">
+                    <div class="category-card" style="--cat-color: var(--CatBlue)">
+                        <div class="hexagon"></div>
+                        <p>Primary</p>
+                    </div>
+                    <div class="category-card" style="--cat-color: var(--CatGreen)">
+                        <div class="hexagon"></div>
+                        <p>Military</p>
+                    </div>
+                    <div class="category-card" style="--cat-color: var(--CatPurple)">
+                        <div class="hexagon"></div>
+                        <p>Magic</p>
+                    </div>
+                    <div class="category-card" style="--cat-color: var(--CatOrange)">
+                        <div class="hexagon"></div>
+                        <p>Support</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
