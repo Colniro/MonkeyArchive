@@ -2,22 +2,9 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center page-content">
-    <div class="container">
-        <header>
-            <div class="logo-group">
-                <a href="index.html"><img src="~/images/monkeys/village.png" alt="Monkey Archive Logo"></a>
-                
-                <a href="index.html">Monkey Archive</a>
-            </div>
-
-            <nav>
-                <a class="nav-link" href="towers.html">Towers</a>
-                <a class="nav-link" href="bloons.html">Bloons</a>
-                <a class="login-btn" href="login.html">Log In</a>
-            </nav>
-        </header>
-    </div>
+<div class="home-shell">
+<div class="page-content">
+    <partial name="_Header" />
 </div>
 
 <section class="hero">
@@ -30,7 +17,7 @@
         <p class="hero-subtitle">The most important stats clear and organized</p>
 
         <div class="hero-buttons">
-            <a href="towers.html" class="btn btn-primary">view Towers</a>
+            <a asp-controller="Towers" asp-action="Index" class="btn btn-primary">view Towers</a>
             <a href="bloons.html" class="btn btn-outline">view Bloons</a>
         </div>
 
@@ -44,37 +31,38 @@
                     <div class="category-item" style="--cat-color: var(--CatBlue)">
                         <img src="~/images/monkeys/dart_monkey.png" class="category-mascot" alt="Primary">
                         <div class="category-bar"></div>
-                        <div class="category-card">
+                        <a class="category-card" asp-controller="Towers" asp-action="Index" asp-route-category="Primary">
                             <div class="hexagon"></div>
                             <p>Primary</p>
-                        </div>
+                        </a>
                     </div>
                     <div class="category-item" style="--cat-color: var(--CatGreen)">
                         <img src="~/images/monkeys/sniper_monkey.png" class="category-mascot category-mascot-tall" alt="Military">
                         <div class="category-bar"></div>
-                        <div class="category-card">
+                        <a class="category-card" asp-controller="Towers" asp-action="Index" asp-route-category="Military">
                             <div class="hexagon"></div>
                             <p>Military</p>
-                        </div>
+                        </a>
                     </div>
                     <div class="category-item" style="--cat-color: var(--CatPurple)">
                         <img src="~/images/monkeys/druid_monkey.png" class="category-mascot" alt="Magic">
                         <div class="category-bar"></div>
-                        <div class="category-card">
+                        <a class="category-card" asp-controller="Towers" asp-action="Index" asp-route-category="Magic">
                             <div class="hexagon"></div>
                             <p>Magic</p>
-                        </div>
+                        </a>
                     </div>
                     <div class="category-item" style="--cat-color: var(--CatOrange)">
                         <img src="~/images/monkeys/engineer_monkey.png" class="category-mascot category-mascot-tall" alt="Support">
                         <div class="category-bar"></div>
-                        <div class="category-card">
+                        <a class="category-card" asp-controller="Towers" asp-action="Index" asp-route-category="Support">
                             <div class="hexagon"></div>
                             <p>Support</p>
-                        </div>
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
+</div>

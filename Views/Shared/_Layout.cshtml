@@ -14,15 +14,13 @@
 </head>
 <body>
 
-    <div class="container page-wrapper">
-        <main role="main" class="pb-3 page-main">
-            @RenderBody()
-        </main>
-    </div>
+    <main role="main">
+        @RenderBody()
+    </main>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    @* No jQuery/Bootstrap JS bundle: category filtering is plain server-side
+       Razor via query-string GET links. Individual pages can still opt into
+       a small script of their own (e.g. live search) through this section. *@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

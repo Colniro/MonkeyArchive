@@ -20,6 +20,8 @@ app.UseAuthorization();
 
 app.MapStaticAssets();
 
+// One convention-based route covers every controller: e.g. /Towers resolves
+// to TowersController.Index() with no extra route registration needed.
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")

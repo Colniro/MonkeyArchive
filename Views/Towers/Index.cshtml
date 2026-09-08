@@ -1,0 +1,84 @@
+@model MonkeyArchive.Models.TowersOverviewViewModel
+@{
+    ViewData["Title"] = "Towers";
+
+    // The five filter pills shown above the grid, in display order.
+    var categories = new[] { "All", "Primary", "Military", "Magic", "Support" };
+}
+
+<div class="towers-page">
+    <partial name="_Header" />
+
+    <main class="towers-main">
+        <div class="container">
+            <h1 class="page-title">All Towers</h1>
+
+            @* Plain GET form: submitting reloads this page with the search
+               term as a query string parameter, filtered server-side in
+               TowersController.Index. The current category is carried along
+               as a hidden field so searching doesn't reset the active filter. *@
+            <form method="get" asp-action="Index" class="search-bar">
+                <button type="submit" class="search-icon" aria-label="Search">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" />
+                        <line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                </button>
+                <input type="text" id="towerSearch" name="search" value="@Model.Search" placeholder="search Towers" autocomplete="off">
+                <input type="hidden" name="category" value="@Model.SelectedCategory">
+            </form>
+
+            @* Each pill is a normal link carrying the current search term
+               along, so switching category keeps whatever was typed above. *@
+            <div class="filter-pills">
+                @foreach (var cat in categories)
+                {
+                    var activeClass = cat == Model.SelectedCategory ? "active" : "";
+                    <a class="filter-pill @activeClass"
+                       data-filter="@cat"
+                       asp-action="Index"
+                       asp-route-category="@cat"
+                       asp-route-search="@Model.Search">@cat</a>
+                }
+            </div>
+
+            <div class="towers-grid">
+                @foreach (var tower in Model.Towers)
+                {
+                    // Category -> hexagon/bar colour, matching the home page's category cards.
+                    string colorVar = tower.Category switch
+                    {
+                        "Primary" => "var(--CatBlue)",
+                        "Military" => "var(--CatGreen)",
+                        "Magic" => "var(--CatPurple)",
+                        "Support" => "var(--CatOrange)",
+                        _ => "var(--Gray)"
+                    };
+
+                    @* .tower-bar must stay a sibling *before* .tower-card (not a child)
+                       so it keeps rendering behind the card once the card gets a
+                       transform on hover - a transform opens a new stacking context,
+                       which would otherwise swallow a negatively z-indexed child bar. *@
+                    <div class="tower-item" data-name="@tower.Name.ToLowerInvariant()" style="--cat-color: @colorVar">
+                        <div class="tower-bar"></div>
+                        <div class="tower-card">
+                            <div class="tower-hexagon">
+                                <img src="~/images/monkeys/@tower.Image" alt="@tower.Name">
+                            </div>
+                            <p>@tower.Name</p>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            @* Always present so the live-search script can toggle it; the
+               inline style covers the no-JS case (category filter alone
+               already produced zero results server-side). *@
+            <p class="no-results" id="noResults" style="display:@(Model.Towers.Count == 0 ? "block" : "none")">No towers found.</p>
+        </div>
+    </main>
+</div>
+
+@section Scripts {
+    <script src="~/js/towers-search.js" asp-append-version="true"></script>
+}
