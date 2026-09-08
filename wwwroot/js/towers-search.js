@@ -4,6 +4,7 @@
 // keystroke.
 document.addEventListener('DOMContentLoaded', function () {
     var searchInput = document.getElementById('towerSearch');
+    var clearButton = document.getElementById('searchClear');
     var noResults = document.getElementById('noResults');
     var items = document.querySelectorAll('.tower-item');
 
@@ -11,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
     }
 
-    searchInput.addEventListener('input', function () {
+    function applyFilter() {
         var query = searchInput.value.trim().toLowerCase();
         var visibleCount = 0;
 
@@ -26,5 +27,15 @@ document.addEventListener('DOMContentLoaded', function () {
         if (noResults) {
             noResults.style.display = visibleCount === 0 ? 'block' : 'none';
         }
-    });
+    }
+
+    searchInput.addEventListener('input', applyFilter);
+
+    if (clearButton) {
+        clearButton.addEventListener('click', function () {
+            searchInput.value = '';
+            searchInput.focus();
+            applyFilter();
+        });
+    }
 });
