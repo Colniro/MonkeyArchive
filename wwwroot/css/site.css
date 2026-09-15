@@ -5,11 +5,14 @@
     --Gold: #E8C57E;
     --LightGreen: #dcefe2;
     --Gray: #5f5e5a;
-    --BtnGreen: #4CAF6D;
-    --CatBlue: #2F80ED;
-    --CatGreen: #3DAE59;
-    --CatPurple: #9B4FE0;
-    --CatOrange: #E8933A;
+    --BtnGreen: #4CAE4F;
+    --BtnGreenText: #173404;
+    --Divider: #e0dac8;
+    --MutedGray: #8a8577;
+    --CatBlue: #3B82C4;
+    --CatGreen: #36AC52;
+    --CatPurple: #9B5DE5;
+    --CatOrange: #F2A93B;
 }
 
 html {
@@ -66,6 +69,11 @@ header {
     width: 55px;
     height: 55px;
     object-fit: contain;
+    transition: transform 0.25s ease;
+}
+
+.logo-group a:hover img {
+    transform: rotate(-8deg) scale(1.08);
 }
 
 .logo-group a {
@@ -116,6 +124,7 @@ nav a.nav-link:hover::after {
 }
 
 .login-btn {
+    position: relative;
     font-family: 'Nunito', sans-serif;
     font-size: 1.15rem;
     font-weight: 700;
@@ -126,13 +135,24 @@ nav a.nav-link:hover::after {
     text-decoration: none;
     border: none;
     cursor: pointer;
-    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
-    transition: box-shadow 0.25s ease, transform 0.25s ease;
 }
 
-.login-btn:hover {
-    box-shadow: 0 0 0 2px #000;
-    transform: translateY(-3px);
+/* Minimal hover: a short underline grows outward from the centre, echoing
+   the nav-link underline but centred instead of left-anchored. */
+.login-btn::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 9px;
+    width: 34%;
+    height: 2px;
+    background-color: currentColor;
+    transform: translateX(-50%) scaleX(0);
+    transition: transform 0.25s ease;
+}
+
+.login-btn:hover::after {
+    transform: translateX(-50%) scaleX(1);
 }
 
 /* Hero section */
@@ -153,21 +173,65 @@ nav a.nav-link:hover::after {
     width: 100%;
 }
 
-.bloon {
-    position: absolute;
-    z-index: 0;
+@keyframes bloon-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-14px); }
 }
 
-.bloon-a {
-    width: 60px;
+/* Only animates transform, not opacity - opacity is left free for the
+   :hover rule below (an animated property always wins over a cascaded one
+   on the same element, so mixing both here would make hover silently
+   do nothing). */
+@keyframes blob-breathe {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+}
+
+.bloon-float {
+    position: absolute;
+    z-index: 0;
+    animation: bloon-float 4s ease-in-out infinite;
+}
+
+.bloon-float.bloon-a {
     top: 20px;
     right: 60px;
 }
 
-.bloon-b {
-    width: 42px;
+.bloon-float.bloon-b {
     top: 75px;
     right: 30px;
+    animation-delay: 1.3s;
+}
+
+
+.bloon-float.bloon-a:hover {
+    cursor: none;
+}
+
+.bloon-float.bloon-b:hover {
+    cursor:none;
+}
+
+/* The idle float lives on .bloon-float above; this hover pop is a
+   transition on the img itself, so it doesn't fight the running keyframe
+   animation for the same `transform` property. */
+.bloon {
+    display: block;
+    cursor: default;
+    transition: transform 0.2s ease;
+}
+
+.bloon-a .bloon {
+    width: 60px;
+}
+
+.bloon-b .bloon {
+    width: 42px;
+}
+
+.bloon:hover {
+    transform: scale(1.3) rotate(-10deg);
 }
 
 .decor-blob {
@@ -177,6 +241,12 @@ nav a.nav-link:hover::after {
     top: 70px;
     opacity: 0.6;
     z-index: 0;
+    animation: blob-breathe 6s ease-in-out infinite;
+    transition: opacity 0.3s ease;
+}
+
+.decor-blob:hover {
+    opacity: 0.85;
 }
 
 .hero-title {
@@ -201,6 +271,7 @@ nav a.nav-link:hover::after {
 }
 
 .btn {
+    position: relative;
     font-family: 'Nunito', sans-serif;
     font-size: clamp(1.15rem, 2.6vh, 1.6rem);
     font-weight: 700;
@@ -210,32 +281,46 @@ nav a.nav-link:hover::after {
     cursor: pointer;
 }
 
+/* Minimal hover: a short underline grows outward from the centre, echoing
+   the nav-link underline but centred instead of left-anchored. */
+.btn::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 14px;
+    width: 34%;
+    height: 2px;
+    background-color: currentColor;
+    transform: translateX(-50%) scaleX(0);
+    transition: transform 0.25s ease;
+}
+
+.btn:hover::after {
+    transform: translateX(-50%) scaleX(1);
+}
+
 .btn-primary {
-    background-color: var(--CatGreen);
-    color: black;
-    border: none;
-    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
-    transition: box-shadow 0.25s ease, transform 0.25s ease;
+    background-color: var(--BtnGreen);
+    color: var(--BtnGreenText);
+    border: 2px solid transparent;
+    transition: border-color 0.25s ease;
 }
 
 .btn-primary:hover {
-    background-color: var(--CatGreen);
-    color: black;
-    box-shadow: 0 0 0 2px #000;
-    transform: translateY(-3px);
+    border-color: #000;
+    background-color:var(--BtnGreen);
+    color: var(--BtnGreenText);
 }
 
 .btn-outline {
     background-color: transparent;
     color: #111;
     border: 2px solid #111;
-    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
-    transition: box-shadow 0.25s ease, transform 0.25s ease;
+    transition: border-color 0.25s ease;
 }
 
 .btn-outline:hover {
-    box-shadow: 0 0 0 2px #111;
-    transform: translateY(-3px);
+    border-color: var(--BtnGreen);
 }
 
 /* Categories */
@@ -247,7 +332,7 @@ nav a.nav-link:hover::after {
 .categories-line {
     display: flex;
     align-items: flex-end;
-    border-bottom: 2px solid rgba(27, 67, 50, 0.25);
+    border-bottom: 2px solid var(--Divider);
 }
 
 .categories-label {
@@ -255,7 +340,7 @@ nav a.nav-link:hover::after {
     font-family: 'Nunito', sans-serif;
     font-size: clamp(1rem, 1.8vh, 1.35rem);
     font-weight: 600;
-    color: var(--Gray);
+    color: var(--MutedGray);
     padding-bottom: clamp(10px, 2vh, 20px);
 }
 
@@ -285,10 +370,29 @@ nav a.nav-link:hover::after {
     object-fit: contain;
     pointer-events: none;
     z-index: 1;
+    transition: transform 0.25s ease;
 }
 
 .category-mascot-tall {
     height: clamp(85px, 16vh, 185px);
+}
+
+/* Each mascot tilts a different way on hover instead of all four moving in
+   lockstep - purely cosmetic variety, tied to their position in the grid. */
+.categories-grid .category-item:nth-child(1):hover .category-mascot {
+    transform: translate(-50%, -4px) rotate(-9deg) scale(1.08);
+}
+
+.categories-grid .category-item:nth-child(2):hover .category-mascot {
+    transform: translate(-50%, -4px) rotate(7deg) scale(1.08);
+}
+
+.categories-grid .category-item:nth-child(3):hover .category-mascot {
+    transform: translate(-50%, -4px) rotate(-6deg) scale(1.08);
+}
+
+.categories-grid .category-item:nth-child(4):hover .category-mascot {
+    transform: translate(-50%, -4px) rotate(10deg) scale(1.08);
 }
 
 /* Peeking colour bar under each category card. It is a sibling of
@@ -473,7 +577,7 @@ nav a.nav-link:hover::after {
     color: #fff;
     text-decoration: none;
     border: none;
-    border-radius: 999px;
+    border-radius: 10px;
     padding: 12px 30px;
     cursor: pointer;
     background-color: var(--Gray);
@@ -501,7 +605,7 @@ nav a.nav-link:hover::after {
 }
 
 .filter-pill:hover {
-    transform: translateY(-2px);
+    transform: translateY(-2px) scale(1.06);
 }
 
 .filter-pill.active {
@@ -562,6 +666,19 @@ nav a.nav-link:hover::after {
     align-items: center;
     justify-content: center;
     overflow: hidden;
+}
+
+/* Plays once on hover start instead of just holding an end state - a
+   little jump/squash rather than the rotate+scale used elsewhere on the
+   site, so the towers grid doesn't feel like a copy of the home page. */
+@keyframes hexagon-hop {
+    0%, 100% { transform: translateY(0) scale(1); }
+    35% { transform: translateY(-4px) scale(1.02); }
+    65% { transform: translateY(0) scale(0.98, 1.02); }
+}
+
+.tower-item:hover .tower-hexagon {
+    animation: hexagon-hop 0.4s ease-out;
 }
 
 .tower-hexagon img {

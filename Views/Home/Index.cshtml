@@ -8,8 +8,12 @@
 </div>
 
 <section class="hero">
-    <img src="~/images/bloons/red_bloon.png" class="bloon bloon-a" alt="">
-    <img src="~/images/bloons/red_bloon.png" class="bloon bloon-b" alt="">
+    @* Floating (idle bob) lives on the wrapper, the hover pop-and-tilt on the
+       img itself - two separate elements because a CSS animation keeps
+       driving `transform` every frame, which would otherwise fight a
+       `:hover` rule trying to set `transform` on the very same element. *@
+    <div class="bloon-float bloon-a"><img src="~/images/bloons/red_bloon.png" class="bloon" alt=""></div>
+    <div class="bloon-float bloon-b"><img src="~/images/bloons/red_bloon.png" class="bloon" alt=""></div>
     <img src="~/images/assets/camo.png" class="decor-blob" alt="">
 
     <div class="container hero-container">
