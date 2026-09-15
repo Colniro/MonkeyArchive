@@ -75,4 +75,32 @@ public class BloonsController : Controller
 
         return View(model);
     }
+
+    // /Bloons/Details/red - id is the bloon's slug (see Bloon.Slug), not its
+    // display name, so the URL stays readable without encoding.
+    public IActionResult Details(string id)
+    {
+        var index = AllBloons.FindIndex(b => b.Slug == id);
+        if (index == -1)
+        {
+            return NotFound();
+        }
+
+        // Previous/next arrows cycle through AllBloons in list order and
+        // wrap around at both ends, same as TowersController.Details.
+        var previous = AllBloons[(index - 1 + AllBloons.Count) % AllBloons.Count];
+        var next = AllBloons[(index + 1) % AllBloons.Count];
+        ViewData["PreviousSlug"] = previous.Slug;
+        ViewData["PreviousName"] = previous.Name;
+        ViewData["NextSlug"] = next.Slug;
+        ViewData["NextName"] = next.Name;
+
+        // The "Pops Into" card needs each child's image/scale to render its
+        // icon; child bloons only store a Name, so resolve those here
+        // instead of doing the lookup in the view.
+        ViewData["BloonImages"] = AllBloons.ToDictionary(b => b.Name, b => b.Image);
+        ViewData["BloonScales"] = AllBloons.ToDictionary(b => b.Name, b => b.ImageScale);
+
+        return View(AllBloons[index]);
+    }
 }

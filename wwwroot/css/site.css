@@ -366,6 +366,10 @@ nav a.nav-link:hover::after {
     border-color: var(--BtnGreen);
 }
 
+.btn-outline::after {
+    background-color: var(--BtnGreen);
+}
+
 /* Categories */
 
 .categories {
@@ -904,6 +908,99 @@ nav a.nav-link:hover::after {
     color: var(--MutedGray);
     font-size: 0.9rem;
     margin-top: 12px;
+}
+
+/* Bloon detail page (/Bloons/Details/{slug}) */
+
+.bloon-hero-image {
+    box-sizing: border-box;
+    padding: 22px;
+    background-color: rgba(0, 0, 0, 0.16);
+    border-radius: 50%;
+}
+
+.bloon-stat-panel {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 420px;
+}
+
+.bloon-tags {
+    display: flex;
+    gap: 12px;
+    margin-top: 22px;
+}
+
+.bloon-tag {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    padding: 8px 20px;
+    border-radius: 999px;
+    background-color: #fff;
+    color: var(--Gray);
+    border: 2px solid var(--Divider);
+}
+
+.bloon-tag.active {
+    background-color: var(--DarkGreen);
+    color: #fff;
+    border-color: var(--DarkGreen);
+}
+
+.section-heading {
+    font-family: 'Baloo 2', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--DarkGreen);
+    margin-top: 44px;
+    margin-bottom: 18px;
+}
+
+.pops-into-card {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background-color: #fff;
+    border-radius: 16px;
+    padding: 20px 28px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    margin-bottom: 60px;
+}
+
+.pops-into-icon {
+    width: 56px;
+    height: 56px;
+    object-fit: contain;
+}
+
+.pops-into-arrow {
+    font-size: 1.6rem;
+    color: var(--MutedGray);
+}
+
+.pops-into-results {
+    display: flex;
+    gap: 8px;
+}
+
+.pops-into-label {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    color: var(--Gray);
+    margin-left: auto;
+}
+
+@media (max-width: 600px) {
+    .pops-into-card {
+        flex-wrap: wrap;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .pops-into-label {
+        margin-left: 0;
+        width: 100%;
+    }
 }
 
 .upgrade-grid {

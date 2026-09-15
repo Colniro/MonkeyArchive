@@ -1,0 +1,77 @@
+@using System.Globalization
+@model MonkeyArchive.Models.Bloon
+@{
+    ViewData["Title"] = Model.Name + " Bloon";
+    var images = (Dictionary<string, string>)ViewData["BloonImages"]!;
+    var scales = (Dictionary<string, double>)ViewData["BloonScales"]!;
+}
+
+<div class="towers-page">
+    <partial name="_Navigation" />
+
+    <section class="tower-hero" style="background: @Model.HeroBackground;">
+        <div class="container tower-hero-inner">
+            <a class="tower-hero-nav tower-hero-nav-prev" asp-action="Details" asp-route-id="@ViewData["PreviousSlug"]" aria-label="Previous bloon: @ViewData["PreviousName"]" title="@ViewData["PreviousName"]">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <polyline points="15 5 8 12 15 19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </a>
+
+            <img src="~/images/bloons/@Model.Image" alt="@Model.Name" class="tower-hero-image bloon-hero-image"
+                 style="transform: scale(@Model.ImageScale.ToString("0.00", CultureInfo.InvariantCulture))">
+            <div>
+                <h1 class="tower-hero-title">@Model.Name Bloon</h1>
+                <p class="tower-hero-desc">@Model.Description</p>
+            </div>
+
+            <a class="tower-hero-nav tower-hero-nav-next" asp-action="Details" asp-route-id="@ViewData["NextSlug"]" aria-label="Next bloon: @ViewData["NextName"]" title="@ViewData["NextName"]">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <polyline points="9 5 16 12 9 19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </a>
+        </div>
+    </section>
+
+    <main class="towers-main">
+        <div class="container">
+            <div class="stat-panel bloon-stat-panel">
+                <div class="stat-item">
+                    <span class="stat-label">Health (RBE)</span>
+                    <span class="stat-value">@Model.Rbe</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Speed</span>
+                    <span class="stat-value">@Model.Speed</span>
+                </div>
+            </div>
+
+            <div class="bloon-tags">
+                <span class="bloon-tag @(Model.IsCamo ? "active" : "")">@(Model.IsCamo ? "Camo" : "No Camo")</span>
+                <span class="bloon-tag @(Model.IsLead ? "active" : "")">@(Model.IsLead ? "Lead" : "No Lead")</span>
+            </div>
+
+            <h2 class="section-heading">Pops Into</h2>
+
+            @if (Model.PopsInto.Count == 0)
+            {
+                <p class="no-results">This is the last layer - popping it removes the bloon for good.</p>
+            }
+            else
+            {
+                <div class="pops-into-card">
+                    <img class="pops-into-icon" src="~/images/bloons/@Model.Image" alt="@Model.Name"
+                         style="transform: scale(@Model.ImageScale.ToString("0.00", CultureInfo.InvariantCulture))">
+                    <span class="pops-into-arrow">&#8594;</span>
+                    <div class="pops-into-results">
+                        @foreach (var child in Model.PopsInto)
+                        {
+                            <img class="pops-into-icon" src="~/images/bloons/@images[child.Name]" alt="@child.Name"
+                                 style="transform: scale(@scales[child.Name].ToString("0.00", CultureInfo.InvariantCulture))">
+                        }
+                    </div>
+                    <span class="pops-into-label">@string.Join(" + ", Model.PopsInto.Select(c => $"{c.Count}× {c.Name} Bloon"))</span>
+                </div>
+            }
+        </div>
+    </main>
+</div>

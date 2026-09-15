@@ -1,6 +1,6 @@
 namespace MonkeyArchive.Models;
 
-// One BTD6 bloon shown on the /Bloons overview page.
+// One BTD6 bloon shown on the /Bloons overview page and its own detail page.
 public class Bloon
 {
     public required string Name { get; set; }
@@ -22,4 +22,37 @@ public class Bloon
     // scales the rendered image to even that out - see BloonsController
     // for how the values were measured.
     public double ImageScale { get; set; } = 1.0;
+
+    // Detail-page fields.
+    public string Description { get; set; } = "";
+    public int Rbe { get; set; }
+    public string Speed { get; set; } = "";
+    public bool IsCamo { get; set; }
+    public bool IsLead { get; set; }
+
+    // Empty for the weakest layer (Red) - popping it just removes the bloon.
+    public List<BloonChild> PopsInto { get; set; } = [];
+
+    // URL-friendly id used for the detail page route (/Bloons/Details/red).
+    public string Slug => Name.ToLowerInvariant().Replace(" ", "-");
+
+    // Detail-page hero background, derived from this bloon's own accent
+    // colour rather than a shared category palette (see Color above).
+    // Rainbow's Color is already a multi-stop CSS gradient string, not a
+    // single hex value, so it's used as-is instead of being blended.
+    public string HeroBackground => Color.StartsWith("linear-gradient", StringComparison.Ordinal)
+        ? Color
+        : $"linear-gradient(120deg, {Blend(Color, 255, 0.22)}, {Blend(Color, 0, 0.4)})";
+
+    private static string Blend(string hex, int target, double amount)
+    {
+        hex = hex.TrimStart('#');
+        var r = Convert.ToInt32(hex[..2], 16);
+        var g = Convert.ToInt32(hex[2..4], 16);
+        var b = Convert.ToInt32(hex[4..6], 16);
+        r += (int)((target - r) * amount);
+        g += (int)((target - g) * amount);
+        b += (int)((target - b) * amount);
+        return $"#{r:X2}{g:X2}{b:X2}";
+    }
 }
