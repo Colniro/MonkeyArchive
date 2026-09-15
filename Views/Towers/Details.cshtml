@@ -1,0 +1,78 @@
+@model MonkeyArchive.Models.Tower
+@{
+    ViewData["Title"] = Model.Name;
+
+    // Category -> hero gradient (light to dark) and upgrade-card colour.
+    // Same four category colours as the overview grid, just stretched into
+    // a light->dark pair for the banner instead of a single flat tone.
+    (string light, string dark, string card) palette = Model.Category switch
+    {
+        "Primary" => ("#3B82C4", "#0C447C", "#2f6da3"),
+        "Military" => ("#36AC52", "#184A20", "#2C8D43"),
+        "Magic" => ("#9B5DE5", "#3E2166", "#7F4CBC"),
+        "Support" => ("#F2A93B", "#7A4E10", "#C68B30"),
+        _ => ("#5f5e5a", "#2b2a28", "#5f5e5a")
+    };
+}
+
+<div class="towers-page">
+    <partial name="_Navigation" />
+
+    <section class="tower-hero" style="--hero-light: @palette.light; --hero-dark: @palette.dark;">
+        <a class="tower-hero-nav tower-hero-nav-prev" asp-action="Details" asp-route-id="@ViewData["PreviousSlug"]" aria-label="Previous monkey: @ViewData["PreviousName"]" title="@ViewData["PreviousName"]">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <polyline points="15 5 8 12 15 19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+        </a>
+
+        <div class="container tower-hero-inner">
+            <img src="~/images/monkeys/@Model.Image" alt="@Model.Name" class="tower-hero-image">
+            <div>
+                <h1 class="tower-hero-title">@Model.Name</h1>
+                <p class="tower-hero-desc">@Model.Description</p>
+            </div>
+        </div>
+
+        <a class="tower-hero-nav tower-hero-nav-next" asp-action="Details" asp-route-id="@ViewData["NextSlug"]" aria-label="Next monkey: @ViewData["NextName"]" title="@ViewData["NextName"]">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <polyline points="9 5 16 12 9 19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+        </a>
+    </section>
+
+    <main class="towers-main">
+        <div class="container">
+            <div class="stat-panel">
+                <div class="stat-item">
+                    <span class="stat-label">Cost</span>
+                    <span class="stat-value">$@Model.Cost.ToString("N0", System.Globalization.CultureInfo.InvariantCulture)</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Damage</span>
+                    <span class="stat-value">@Model.Damage</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Pierce</span>
+                    <span class="stat-value">@Model.Pierce</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Range</span>
+                    <span class="stat-value">@(Model.Range < 0 ? "Unlimited" : Model.Range.ToString())</span>
+                </div>
+            </div>
+            <p class="stat-caption">Stats on Medium difficulty - can change with updates</p>
+
+            <div class="upgrade-grid">
+                @foreach (var upgrade in Model.UpgradePaths)
+                {
+                    <div class="upgrade-card" style="--path-color: @palette.card;">
+                        <span class="upgrade-path">@upgrade.PathLabel - Tier 5</span>
+                        <h3 class="upgrade-name">@upgrade.Name</h3>
+                        <p class="upgrade-desc">@upgrade.Description</p>
+                        <span class="upgrade-price">$@upgrade.Price.ToString("N0", System.Globalization.CultureInfo.InvariantCulture)</span>
+                    </div>
+                }
+            </div>
+        </div>
+    </main>
+</div>

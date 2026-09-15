@@ -67,12 +67,12 @@
                        which would otherwise swallow a negatively z-indexed child bar. *@
                     <div class="tower-item" data-search-item data-name="@tower.Name.ToLowerInvariant()" style="--cat-color: @colorVar">
                         <div class="tower-bar"></div>
-                        <div class="tower-card">
+                        <a class="tower-card" asp-action="Details" asp-route-id="@tower.Slug">
                             <div class="tower-hexagon">
                                 <img src="~/images/monkeys/@tower.Image" alt="@tower.Name">
                             </div>
                             <p>@tower.Name</p>
-                        </div>
+                        </a>
                     </div>
                 }
             </div>
