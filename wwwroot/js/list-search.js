@@ -1,12 +1,14 @@
-// Progressive enhancement only: category filtering already works server-side
-// (the filter pills are plain links), this just narrows the already-rendered
-// cards live as the user types, instead of requiring a form submit per
-// keystroke.
+// Generic live-search for card grids (Towers, Bloons, ...). Progressive
+// enhancement only: category filtering already works server-side via the
+// filter pills (plain links); this just narrows the already-rendered cards
+// live as the user types, instead of requiring a form submit per keystroke.
+// Targets elements by data attribute rather than a fixed id/class, so the
+// same script works on any page that marks its markup up this way.
 document.addEventListener('DOMContentLoaded', function () {
-    var searchInput = document.getElementById('towerSearch');
-    var clearButton = document.getElementById('searchClear');
-    var noResults = document.getElementById('noResults');
-    var items = document.querySelectorAll('.tower-item');
+    var searchInput = document.querySelector('[data-search-input]');
+    var clearButton = document.querySelector('[data-search-clear]');
+    var noResults = document.querySelector('[data-no-results]');
+    var items = document.querySelectorAll('[data-search-item]');
 
     if (!searchInput) {
         return;

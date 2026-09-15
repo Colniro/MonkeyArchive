@@ -1,9 +1,9 @@
-@model MonkeyArchive.Models.TowersOverviewViewModel
+@model MonkeyArchive.Models.BloonsOverviewViewModel
 @{
-    ViewData["Title"] = "Towers";
+    ViewData["Title"] = "Bloons";
 
-    // The five filter pills shown above the grid, in display order.
-    var categories = new[] { "All", "Primary", "Military", "Magic", "Support" };
+    // The two filter pills shown above the grid, in display order.
+    var categories = new[] { "All", "Normal", "MOAB-Class" };
 }
 
 <div class="towers-page">
@@ -11,11 +11,11 @@
 
     <main class="towers-main">
         <div class="container">
-            <h1 class="page-title">All Towers</h1>
+            <h1 class="page-title">All Standard Bloons</h1>
 
             @* Plain GET form: submitting reloads this page with the search
                term as a query string parameter, filtered server-side in
-               TowersController.Index. The current category is carried along
+               BloonsController.Index. The current category is carried along
                as a hidden field so searching doesn't reset the active filter. *@
             <form method="get" asp-action="Index" class="search-bar">
                 <button type="submit" class="search-icon" aria-label="Search">
@@ -24,7 +24,7 @@
                         <line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
                     </svg>
                 </button>
-                <input type="text" data-search-input name="search" value="@Model.Search" placeholder="search Towers" autocomplete="off">
+                <input type="text" data-search-input name="search" value="@Model.Search" placeholder="search Bloons" autocomplete="off">
                 <button type="button" class="search-clear" data-search-clear aria-label="Clear search">
                     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
@@ -49,38 +49,26 @@
             </div>
 
             <div class="towers-grid">
-                @foreach (var tower in Model.Towers)
+                @* Reuses the .tower-* card styling from the Towers page - same
+                   visual language across both overview pages. .tower-bar stays
+                   a sibling *before* .tower-card (not a child) so it keeps
+                   rendering behind the card once the card gets a transform on
+                   hover; see the comment on .tower-bar in site.css. *@
+                @foreach (var bloon in Model.Bloons)
                 {
-                    // Category -> hexagon/bar colour, matching the home page's category cards.
-                    string colorVar = tower.Category switch
-                    {
-                        "Primary" => "var(--CatBlue)",
-                        "Military" => "var(--CatGreen)",
-                        "Magic" => "var(--CatPurple)",
-                        "Support" => "var(--CatOrange)",
-                        _ => "var(--Gray)"
-                    };
-
-                    @* .tower-bar must stay a sibling *before* .tower-card (not a child)
-                       so it keeps rendering behind the card once the card gets a
-                       transform on hover - a transform opens a new stacking context,
-                       which would otherwise swallow a negatively z-indexed child bar. *@
-                    <div class="tower-item" data-search-item data-name="@tower.Name.ToLowerInvariant()" style="--cat-color: @colorVar">
+                    <div class="tower-item" data-search-item data-name="@bloon.Name.ToLowerInvariant()" style="--cat-color: @bloon.Color">
                         <div class="tower-bar"></div>
                         <div class="tower-card">
                             <div class="tower-hexagon">
-                                <img src="~/images/monkeys/@tower.Image" alt="@tower.Name">
+                                <img src="~/images/bloons/@bloon.Image" alt="@bloon.Name">
                             </div>
-                            <p>@tower.Name</p>
+                            <p>@bloon.Name</p>
                         </div>
                     </div>
                 }
             </div>
 
-            @* Always present so the live-search script can toggle it; the
-               inline style covers the no-JS case (category filter alone
-               already produced zero results server-side). *@
-            <p class="no-results" data-no-results style="display:@(Model.Towers.Count == 0 ? "block" : "none")">No towers found.</p>
+            <p class="no-results" data-no-results style="display:@(Model.Bloons.Count == 0 ? "block" : "none")">No bloons found.</p>
         </div>
     </main>
 </div>
