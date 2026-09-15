@@ -1,0 +1,19 @@
+@model List<string>
+@{
+    ViewData["Title"] = "Favorites";
+}
+
+<div class="towers-page">
+    <partial name="_Navigation" />
+
+    <main class="towers-main">
+        <div class="container">
+            <h1 class="page-title">Your Favorites</h1>
+
+            @* Favoriting a tower isn't wired up anywhere yet, so Model is
+               always empty for now - this page exists so the nav link works
+               and already reuses the towers grid layout for when it isn't. *@
+            <p class="no-results">You haven't favorited any monkeys yet.</p>
+        </div>
+    </main>
+</div>

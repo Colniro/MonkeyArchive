@@ -19,25 +19,25 @@
     <partial name="_Navigation" />
 
     <section class="tower-hero" style="--hero-light: @palette.light; --hero-dark: @palette.dark;">
-        <a class="tower-hero-nav tower-hero-nav-prev" asp-action="Details" asp-route-id="@ViewData["PreviousSlug"]" aria-label="Previous monkey: @ViewData["PreviousName"]" title="@ViewData["PreviousName"]">
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <polyline points="15 5 8 12 15 19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-        </a>
-
         <div class="container tower-hero-inner">
+            <a class="tower-hero-nav tower-hero-nav-prev" asp-action="Details" asp-route-id="@ViewData["PreviousSlug"]" aria-label="Previous monkey: @ViewData["PreviousName"]" title="@ViewData["PreviousName"]">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <polyline points="15 5 8 12 15 19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </a>
+
             <img src="~/images/monkeys/@Model.Image" alt="@Model.Name" class="tower-hero-image">
             <div>
                 <h1 class="tower-hero-title">@Model.Name</h1>
                 <p class="tower-hero-desc">@Model.Description</p>
             </div>
-        </div>
 
-        <a class="tower-hero-nav tower-hero-nav-next" asp-action="Details" asp-route-id="@ViewData["NextSlug"]" aria-label="Next monkey: @ViewData["NextName"]" title="@ViewData["NextName"]">
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <polyline points="9 5 16 12 9 19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-        </a>
+            <a class="tower-hero-nav tower-hero-nav-next" asp-action="Details" asp-route-id="@ViewData["NextSlug"]" aria-label="Next monkey: @ViewData["NextName"]" title="@ViewData["NextName"]">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <polyline points="9 5 16 12 9 19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </a>
+        </div>
     </section>
 
     <main class="towers-main">

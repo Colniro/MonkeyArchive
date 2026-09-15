@@ -1,12 +1,49 @@
+@{
+    var loggedInEmail = Context.Session.GetString("UserEmail");
+    var isLoggedIn = !string.IsNullOrEmpty(loggedInEmail);
+    var displayName = isLoggedIn ? loggedInEmail!.Split('@')[0] : null;
+}
+
 <header>
     <div class="logo-group">
-        <a asp-controller="Home" asp-action="Index"><img src="~/images/monkeys/village.png" alt="Monkey Archive Logo"></a>
+        <a asp-controller="Home" asp-action="Index">
+            <span class="logo-badge">
+                <img src="~/images/monkeys/village.png" alt="Monkey Archive Logo">
+            </span>
+        </a>
         <a asp-controller="Home" asp-action="Index">Monkey Archive</a>
     </div>
 
     <nav>
-        <a class="nav-link" asp-controller="Towers" asp-action="Index">Towers</a>
-        <a class="nav-link" asp-controller="Bloons" asp-action="Index">Bloons</a>
-        <a class="login-btn" href="login.html">Log In</a>
+        <div class="nav-links">
+            <a class="nav-link" asp-controller="Towers" asp-action="Index">Towers</a>
+            <a class="nav-link" asp-controller="Bloons" asp-action="Index">Bloons</a>
+            @if (isLoggedIn)
+            {
+                <a class="nav-link" asp-controller="Account" asp-action="Favorites">Favorites</a>
+            }
+        </div>
+
+        <span class="nav-divider" aria-hidden="true"></span>
+
+        @if (isLoggedIn)
+        {
+            <div class="account-group">
+                <span class="account-badge">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2" />
+                        <path d="M4 20c0-4.418 3.582-8 8-8s8 3.582 8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                    @displayName
+                </span>
+                <form method="post" asp-controller="Account" asp-action="Logout" class="logout-form">
+                    <button type="submit" class="logout-btn">Log Out</button>
+                </form>
+            </div>
+        }
+        else
+        {
+            <a class="login-btn" asp-controller="Account" asp-action="Login">Log In</a>
+        }
     </nav>
 </header>
