@@ -15,4 +15,11 @@ public class Bloon
     // is its own colour, so it travels on the model instead of being
     // computed from Category in the view.
     public required string Color { get; set; }
+
+    // The source PNGs crop their balloon art to wildly different amounts of
+    // transparent padding (some fill ~95% of the canvas, others ~30%), so
+    // at a shared display size they'd look inconsistently sized. This
+    // scales the rendered image to even that out - see BloonsController
+    // for how the values were measured.
+    public double ImageScale { get; set; } = 1.0;
 }

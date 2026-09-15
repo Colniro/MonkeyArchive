@@ -60,7 +60,8 @@
                         <div class="tower-bar"></div>
                         <div class="tower-card">
                             <div class="tower-hexagon">
-                                <img src="~/images/bloons/@bloon.Image" alt="@bloon.Name">
+                                <img src="~/images/bloons/@bloon.Image" alt="@bloon.Name"
+                                     style="transform: scale(@bloon.ImageScale.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture))">
                             </div>
                             <p>@bloon.Name</p>
                         </div>

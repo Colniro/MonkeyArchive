@@ -30,8 +30,8 @@ public class TowersController : Controller
         new Tower { Name = "Druid", Category = "Magic", Image = "druid_monkey.png" },
         new Tower { Name = "Mermonkey", Category = "Magic", Image = "mermaid_monkey.png" },
 
-        new Tower { Name = "Banana Farm", Category = "Support", Image = "banana_monkey.png" },
-        new Tower { Name = "Spike Factory", Category = "Support", Image = "spice_factory_monkey.png" },
+        new Tower { Name = "Banana Farm", Category = "Support", Image = "banana_farm_monkey.png" },
+        new Tower { Name = "Spike Factory", Category = "Support", Image = "spike_factory_monkey.png" },
         new Tower { Name = "Monkey Village", Category = "Support", Image = "village.png" },
         new Tower { Name = "Engineer Monkey", Category = "Support", Image = "engineer_monkey.png" },
         new Tower { Name = "Beast Handler", Category = "Support", Image = "beast_handler_monkey.png" },
