@@ -3,17 +3,14 @@ using MonkeyArchive.Models;
 
 namespace MonkeyArchive.Controllers;
 
-// Serves the "All Towers" overview page (/Towers). The tower list is fixed
-// game data rather than something users create, so it lives here as a plain
-// in-memory collection instead of coming from a database.
+// Zeigt die "Alle Towers" Übersicht auf /Towers.
+// Die Tower Liste sind feste Spieldaten und keine Nutzerdaten. Darum liegt sie hier einfach im Speicher und nicht in einer Datenbank.
 public class TowersController : Controller
 {
     private static readonly List<Tower> AllTowers =
     [
-        // Base stats and Tier 5 upgrade prices below are Medium-difficulty
-        // values pulled from current datamined BTD6 game files (not the wiki,
-        // which was unreachable), so they reflect the live game rather than
-        // a possibly outdated reference image.
+        // Die Basiswerte und Tier 5 Preise kommen von den echten, aktuellen BTD6 Spieldaten.
+        // Das Wiki war nicht erreichbar. Darum sind das die echten Werte aus dem Spiel und nicht von einem alten Bild.
         new Tower
         {
             Name = "Dart Monkey", Category = "Primary", Image = "dart_monkey.png",
@@ -283,10 +280,9 @@ public class TowersController : Controller
         },
     ];
 
-    // Search and category filtering both happen here, driven purely by the
-    // query string (?search=...&category=...). The page needs no JavaScript:
-    // the search form and the filter pills are plain GET links/forms that
-    // reload this action with different parameters.
+    // Suche und Kategorie Filter laufen beide über die Query String Parameter (?search=...&category=...).
+    // Die Seite braucht dafür kein JavaScript. Suchfeld und Filter Pills sind normale GET Links und Formulare.
+    // Die laden diese Action einfach mit anderen Parametern neu.
     public IActionResult Index(string? search, string? category)
     {
         var towers = AllTowers.AsEnumerable();
@@ -312,8 +308,8 @@ public class TowersController : Controller
         return View(model);
     }
 
-    // /Towers/Details/dart-monkey - id is the tower's slug (see Tower.Slug),
-    // not its display name, so the URL stays readable without encoding.
+    // Zum Beispiel /Towers/Details/dart-monkey. Die id ist der Slug vom Tower (siehe Tower.Slug), nicht der Name.
+    // So bleibt die URL lesbar und muss nicht encodiert werden.
     public IActionResult Details(string id)
     {
         var index = AllTowers.FindIndex(t => t.Slug == id);
@@ -322,9 +318,8 @@ public class TowersController : Controller
             return NotFound();
         }
 
-        // Previous/next arrows cycle through AllTowers in list order and wrap
-        // around at both ends, so every tower (including the first and last)
-        // always has somewhere to go.
+        // Die Pfeile gehen durch die AllTowers Liste in ihrer Reihenfolge.
+        // Am Anfang und Ende springt es wieder um. So hat jeder Tower immer einen nächsten und vorherigen.
         var previous = AllTowers[(index - 1 + AllTowers.Count) % AllTowers.Count];
         var next = AllTowers[(index + 1) % AllTowers.Count];
         ViewData["PreviousSlug"] = previous.Slug;

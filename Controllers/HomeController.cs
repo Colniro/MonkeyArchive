@@ -16,6 +16,14 @@ namespace MonkeyArchive.Controllers
             return View();
         }
 
+        // Geheime Seite, verlinkt nirgends im Menü. Nur zum Spass, kein
+        // richtiger Tower.
+        [Route("/elprimo")]
+        public IActionResult ElPrimo()
+        {
+            return View();
+        }
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

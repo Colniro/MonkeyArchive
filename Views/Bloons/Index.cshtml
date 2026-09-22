@@ -2,7 +2,7 @@
 @{
     ViewData["Title"] = "Bloons";
 
-    // The two filter pills shown above the grid, in display order.
+    // Die zwei Filter Pills über dem Grid, in dieser Reihenfolge.
     var categories = new[] { "All", "Normal", "MOAB-Class" };
 }
 
@@ -13,10 +13,9 @@
         <div class="container">
             <h1 class="page-title">All Standard Bloons</h1>
 
-            @* Plain GET form: submitting reloads this page with the search
-               term as a query string parameter, filtered server-side in
-               BloonsController.Index. The current category is carried along
-               as a hidden field so searching doesn't reset the active filter. *@
+            @* Ein normales GET Formular. Beim Absenden lädt die Seite neu mit dem Suchtext als Query Parameter.
+               Gefiltert wird dann in BloonsController.Index.
+               Die aktuelle Kategorie läuft als verstecktes Feld mit, damit die Suche den Filter nicht zurücksetzt. *@
             <form method="get" asp-action="Index" class="search-bar">
                 <button type="submit" class="search-icon" aria-label="Search">
                     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -34,8 +33,8 @@
                 <input type="hidden" name="category" value="@Model.SelectedCategory">
             </form>
 
-            @* Each pill is a normal link carrying the current search term
-               along, so switching category keeps whatever was typed above. *@
+            @* Jede Pille ist ein normaler Link, der den aktuellen Suchtext mitnimmt.
+               So bleibt der eingetippte Text stehen, wenn man die Kategorie wechselt. *@
             <div class="filter-pills">
                 @foreach (var cat in categories)
                 {
@@ -49,11 +48,10 @@
             </div>
 
             <div class="towers-grid">
-                @* Reuses the .tower-* card styling from the Towers page - same
-                   visual language across both overview pages. .tower-bar stays
-                   a sibling *before* .tower-card (not a child) so it keeps
-                   rendering behind the card once the card gets a transform on
-                   hover; see the comment on .tower-bar in site.css. *@
+                @* Nutzt die gleichen .tower-* Klassen wie die Towers Seite. So sehen beide Übersichten gleich aus.
+                   .tower-bar bleibt ein Sibling vor .tower-card, nicht ein Kind davon.
+                   So bleibt sie sichtbar wenn die Karte beim Hover ein transform bekommt.
+                   Mehr dazu beim Kommentar zu .tower-bar in site.css. *@
                 @foreach (var bloon in Model.Bloons)
                 {
                     <div class="tower-item" data-search-item data-name="@bloon.Name.ToLowerInvariant()" style="--cat-color: @bloon.Color">

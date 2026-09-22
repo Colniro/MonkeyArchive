@@ -1,27 +1,27 @@
 namespace MonkeyArchive.Models;
 
-// One BTD6 tower shown on the /Towers overview page and its own detail page.
+// Ein BTD6 Tower. Wird auf der /Towers Übersicht und auf der eigenen Detailseite gezeigt.
 public class Tower
 {
     public required string Name { get; set; }
 
-    // One of "Primary", "Military", "Magic", "Support" - matches the
-    // filter pill values and the --Cat* colour variables in site.css.
+    // Ist "Primary", "Military", "Magic" oder "Support".
+    // Muss zu den Filter Pills und den --Cat* Farben in site.css passen.
     public required string Category { get; set; }
 
-    // File name only (no path); resolved against wwwroot/images/monkeys/ in the view.
+    // Nur der Dateiname, kein Pfad. Der Pfad wird in der View mit wwwroot/images/monkeys/ zusammengebaut.
     public required string Image { get; set; }
 
-    // Detail-page fields. Base stats are Medium-difficulty, tier 0-0-0.
+    // Felder für die Detailseite. Die Basiswerte gelten für Medium Difficulty, Tier 0-0-0.
     public string Description { get; set; } = "";
     public int Cost { get; set; }
     public int Damage { get; set; }
     public int Pierce { get; set; }
-    // -1 means the tower's range is unlimited/global (e.g. Sniper Monkey,
-    // Dartling Gunner) rather than a real tile-based number.
+    // -1 heisst die Reichweite ist unendlich, zum Beispiel bei Sniper Monkey oder Dartling Gunner.
+    // Das ist keine echte Zahl auf dem Spielfeld.
     public int Range { get; set; }
     public List<TowerUpgradePath> UpgradePaths { get; set; } = [];
 
-    // URL-friendly id used for the detail page route (/Towers/Details/dart-monkey).
+    // Id für die URL der Detailseite, zum Beispiel /Towers/Details/dart-monkey.
     public string Slug => Name.ToLowerInvariant().Replace(" ", "-");
 }

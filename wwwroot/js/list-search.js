@@ -1,9 +1,8 @@
-// Generic live-search for card grids (Towers, Bloons, ...). Progressive
-// enhancement only: category filtering already works server-side via the
-// filter pills (plain links); this just narrows the already-rendered cards
-// live as the user types, instead of requiring a form submit per keystroke.
-// Targets elements by data attribute rather than a fixed id/class, so the
-// same script works on any page that marks its markup up this way.
+// Allgemeine Live Suche für Karten Grids, zum Beispiel Towers und Bloons.
+// Der Kategorie Filter funktioniert schon ohne JavaScript, über normale Links.
+// Dieses Script macht nur die Live Suche beim Tippen, statt jedes Mal das Formular abzuschicken.
+// Es sucht Elemente über data Attribute statt einer festen id oder Klasse.
+// So funktioniert das gleiche Script auf jeder Seite, die ihr HTML so aufbaut.
 document.addEventListener('DOMContentLoaded', function () {
     var searchInput = document.querySelector('[data-search-input]');
     var clearButton = document.querySelector('[data-search-clear]');

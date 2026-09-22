@@ -1,0 +1,64 @@
+@{
+    ViewData["Title"] = "El Primo";
+}
+
+<div class="towers-page">
+    <partial name="_Navigation" />
+
+    <section class="tower-hero" style="--hero-light: #2F80ED; --hero-dark: #0C1F4A;">
+        <div class="container tower-hero-inner">
+            <img src="~/images/assets/primo.png" alt="El Primo" class="tower-hero-image">
+            <div>
+                <h1 class="tower-hero-title">El Primo</h1>
+                <p class="tower-hero-desc">A luchador who wandered in from the wrong game. Nobody knows how he got here. Nobody can make him leave.</p>
+            </div>
+        </div>
+    </section>
+
+    <main class="towers-main">
+        <div class="container">
+            <div class="stat-panel">
+                <div class="stat-item">
+                    <span class="stat-label">Cost</span>
+                    <span class="stat-value">Free</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Damage</span>
+                    <span class="stat-value">&iexcl;Orale!</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Pierce</span>
+                    <span class="stat-value">Your Screen</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Range</span>
+                    <span class="stat-value">Unlimited</span>
+                </div>
+            </div>
+            <p class="stat-caption">Stats not affiliated with Monkey Archive, BTD6, or reality</p>
+
+            <div class="upgrade-grid">
+                <div class="upgrade-card" style="--path-color: #1B4332;">
+                    <span class="upgrade-path">Star Power</span>
+                    <h3 class="upgrade-name">El Fuego</h3>
+                    <p class="upgrade-desc">His fists catch fire. Bloons that get hit keep burning long after he's gone.</p>
+                    <span class="upgrade-price">???</span>
+                </div>
+                <div class="upgrade-card" style="--path-color: #A8241F;">
+                    <span class="upgrade-path">Star Power</span>
+                    <h3 class="upgrade-name">Meteor Rush</h3>
+                    <p class="upgrade-desc">Charges across the whole track, unstoppable, flattening every bloon in his path.</p>
+                    <span class="upgrade-price">???</span>
+                </div>
+                <div class="upgrade-card" style="--path-color: #7A4E10;">
+                    <span class="upgrade-path">Gadget</span>
+                    <h3 class="upgrade-name">Fists of Fury</h3>
+                    <p class="upgrade-desc">Throws two punches at once. Somehow this is the balanced option.</p>
+                    <span class="upgrade-price">???</span>
+                </div>
+            </div>
+
+            <p class="stat-caption">You found the secret. Tell no one. <a asp-controller="Home" asp-action="Index">Back to safety</a></p>
+        </div>
+    </main>
+</div>

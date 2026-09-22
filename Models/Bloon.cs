@@ -1,60 +1,58 @@
 namespace MonkeyArchive.Models;
 
-// One BTD6 bloon shown on the /Bloons overview page and its own detail page.
+// Ein BTD6 Bloon. Wird auf der /Bloons Übersicht und auf der eigenen Detailseite gezeigt.
 public class Bloon
 {
     public required string Name { get; set; }
 
-    // "Normal" or "MOAB-Class" - matches the filter pill values.
+    // Ist "Normal" oder "MOAB-Class". Muss zu den Filter Pills passen.
     public required string Category { get; set; }
 
-    // File name only (no path); resolved against wwwroot/images/bloons/ in the view.
+    // Nur der Dateiname, kein Pfad. Der Pfad wird in der View mit wwwroot/images/bloons/ zusammengebaut.
     public required string Image { get; set; }
 
-    // Bloons don't share four category colours like towers do - each one
-    // is its own colour, so it travels on the model instead of being
-    // computed from Category in the view.
+    // Bloons haben nicht nur vier Kategorie Farben wie die Towers. Jeder Bloon hat seine eigene Farbe.
+    // Darum steht die Farbe hier im Model und wird nicht aus der Category berechnet.
     public required string Color { get; set; }
 
-    // The source PNGs crop their balloon art to wildly different amounts of
-    // transparent padding (some fill ~95% of the canvas, others ~30%), so
-    // at a shared display size they'd look inconsistently sized. This
-    // scales the rendered image to even that out - see BloonsController
-    // for how the values were measured.
+    // Die Bilder haben unterschiedlich viel transparenten Rand um den Ballon.
+    // Manche füllen fast das ganze Bild, andere nur einen kleinen Teil.
+    // Darum würden sie bei gleicher Grösse unterschiedlich gross aussehen.
+    // Dieser Wert skaliert das Bild damit es wieder passt. Siehe BloonsController für die genauen Werte.
     public double ImageScale { get; set; } = 1.0;
 
-    // Detail-page fields.
+    // Felder für die Detailseite.
     public string Description { get; set; } = "";
     public int Rbe { get; set; }
     public string Speed { get; set; } = "";
     public bool IsCamo { get; set; }
     public bool IsLead { get; set; }
 
-    // This bloon's position in BTD6's fixed layer order (Red=1 ... BAD=13),
-    // straight from the datamined layerNumber field - several bloons share
-    // a number (Black/White/Purple=6, Lead/Zebra=7, DDT/ZOMG=12) because
-    // that's genuinely how the game orders them, not a display bug.
+    // Die Position in der festen Layer Reihenfolge von BTD6. Red ist 1, BAD ist 13.
+    // Der Wert kommt direkt aus den echten Spieldaten (layerNumber).
+    // Manche Bloons teilen sich eine Nummer, zum Beispiel Black, White und Purple sind alle 6.
+    // Das ist so im Spiel und kein Fehler.
     public int Layer { get; set; }
 
-    // Damage immunities beyond Lead (which gets its own tag) - e.g. Black
-    // is immune to explosions. Empty for bloons with none.
+    // Immunitäten ausser Lead. Lead hat einen eigenen Tag.
+    // Zum Beispiel ist Black immun gegen Explosionen. Ist leer wenn ein Bloon keine hat.
     public List<string> Immunities { get; set; } = [];
 
-    // Empty for the weakest layer (Red) - popping it just removes the bloon.
+    // Ist leer beim schwächsten Layer (Red). Der verschwindet einfach beim Platzen.
     public List<BloonChild> PopsInto { get; set; } = [];
 
-    // Set instead of PopsInto for bloons whose reveal isn't a fixed chain
-    // (Ceramic and DDT pop into one random weaker layer in the real game,
-    // not one specific result) - shown as plain text instead of the icon row.
+    // Wird statt PopsInto benutzt wenn das Ergebnis nicht fix ist.
+    // Ceramic und DDT platzen im echten Spiel zu einem zufälligen schwächeren Bloon.
+    // Hier steht dann ein Text statt der Bilderreihe.
     public string? PopsIntoNote { get; set; }
 
-    // URL-friendly id used for the detail page route (/Bloons/Details/red).
+    // Id für die URL der Detailseite, zum Beispiel /Bloons/Details/red.
     public string Slug => Name.ToLowerInvariant().Replace(" ", "-");
 
-    // Detail-page hero background, derived from this bloon's own accent
-    // colour rather than a shared category palette (see Color above).
-    // Rainbow's Color is already a multi-stop CSS gradient string, not a
-    // single hex value, so it's used as-is instead of being blended.
+    // Hintergrund für den Hero Bereich auf der Detailseite.
+    // Wird aus der eigenen Farbe des Bloons berechnet, nicht aus einer Kategorie Palette wie bei Towers.
+    // Rainbow hat schon einen fertigen CSS Farbverlauf als Color, keinen einzelnen Hex Wert.
+    // Darum wird der einfach direkt verwendet statt berechnet.
     public string HeroBackground => Color.StartsWith("linear-gradient", StringComparison.Ordinal)
         ? Color
         : $"linear-gradient(120deg, {Blend(Color, 255, 0.22)}, {Blend(Color, 0, 0.4)})";

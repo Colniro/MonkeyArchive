@@ -26,13 +26,18 @@ html {
     box-sizing: border-box;
 }
 
+/* Zwei sanfte goldene Lichtflecken in den Ecken. Ganz leicht, nur damit die
+   Fläche nicht komplett flach wirkt. */
 body {
     background-color: var(--Creme);
+    background-image: radial-gradient(circle at 12% 8%, rgba(232, 197, 126, 0.22), transparent 40%),
+                       radial-gradient(circle at 88% 92%, rgba(232, 197, 126, 0.16), transparent 40%);
+    background-attachment: fixed;
 }
 
-/* Only the home page's hero design should ever be scroll-free - it wraps its
-   own header + hero in this div so the 100vh/overflow:hidden lock stays
-   local instead of applying to every page in the shared _Layout. */
+/* Nur die Startseite soll ohne Scrollen auskommen.
+   Header und Hero sind darum extra in diesem Div. So gilt 100vh und overflow:hidden nur hier.
+   Auf anderen Seiten im gemeinsamen _Layout gilt das nicht. */
 .home-shell {
     display: flex;
     flex-direction: column;
@@ -44,9 +49,9 @@ body {
     flex: 0 0 auto;
 }
 
-/* Shared across pages via _Header.cshtml. Sticky rather than fixed so it
-   still participates in normal layout flow (no manual top-padding needed
-   on the page content below it) while staying visible on scroll. */
+/* Kommt auf allen Seiten über _Header.cshtml. Sticky statt fixed.
+   So bleibt der normale Layout Fluss erhalten und der Inhalt darunter braucht kein extra padding oben.
+   Trotzdem bleibt der Header beim Scrollen sichtbar. */
 header {
     position: sticky;
     top: 0;
@@ -60,9 +65,9 @@ header {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.28);
 }
 
-/* Thin four-colour strip along the header's bottom edge, one segment per
-   monkey class (same colours as the category filter pills) - a stand-in
-   for a border that doubles as a small piece of site identity. */
+/* Dünner vierfarbiger Streifen am unteren Rand vom Header.
+   Ein Abschnitt pro Affen Klasse, gleiche Farben wie die Filter Pills.
+   Ersetzt einen normalen Rand und ist gleichzeitig ein kleines Stück Design für die Seite. */
 header::after {
     content: "";
     position: absolute;
@@ -180,8 +185,8 @@ nav a.nav-link:hover::after {
     cursor: pointer;
 }
 
-/* Minimal hover: a short underline grows outward from the centre, echoing
-   the nav-link underline but centred instead of left-anchored. */
+/* Kleiner Hover Effekt. Ein kurzer Strich wächst von der Mitte aus.
+   Gleiche Idee wie die Unterstreichung bei nav-link, nur von der Mitte statt von links. */
 .login-btn::after {
     content: "";
     position: absolute;
@@ -198,7 +203,7 @@ nav a.nav-link:hover::after {
     transform: translateX(-50%) scaleX(1);
 }
 
-/* Hero section */
+/* Hero Bereich */
 
 .hero {
     position: relative;
@@ -221,10 +226,10 @@ nav a.nav-link:hover::after {
     50% { transform: translateY(-14px); }
 }
 
-/* Only animates transform, not opacity - opacity is left free for the
-   :hover rule below (an animated property always wins over a cascaded one
-   on the same element, so mixing both here would make hover silently
-   do nothing). */
+/* Animiert nur transform, nicht opacity.
+   Opacity bleibt frei für die :hover Regel weiter unten.
+   Eine Animation gewinnt sonst immer gegen eine normale Regel auf dem gleichen Element.
+   Beide zusammen auf transform würden den Hover Effekt einfach kaputt machen. */
 @keyframes blob-breathe {
     0%, 100% { transform: scale(1); }
     50% { transform: scale(1.08); }
@@ -256,9 +261,8 @@ nav a.nav-link:hover::after {
     cursor:none;
 }
 
-/* The idle float lives on .bloon-float above; this hover pop is a
-   transition on the img itself, so it doesn't fight the running keyframe
-   animation for the same `transform` property. */
+/* Das Schweben ist auf .bloon-float oben. Der Hover Effekt hier ist eine transition auf dem Bild selbst.
+   So gibt es keinen Konflikt mit der laufenden Keyframe Animation, die auch transform benutzt. */
 .bloon {
     display: block;
     cursor: default;
@@ -324,8 +328,8 @@ nav a.nav-link:hover::after {
     cursor: pointer;
 }
 
-/* Minimal hover: a short underline grows outward from the centre, echoing
-   the nav-link underline but centred instead of left-anchored. */
+/* Kleiner Hover Effekt. Ein kurzer Strich wächst von der Mitte aus.
+   Gleiche Idee wie die Unterstreichung bei nav-link, nur von der Mitte statt von links. */
 .btn::after {
     content: "";
     position: absolute;
@@ -370,7 +374,7 @@ nav a.nav-link:hover::after {
     background-color: var(--BtnGreen);
 }
 
-/* Categories */
+/* Kategorien */
 
 .categories {
     text-align: left;
@@ -424,8 +428,8 @@ nav a.nav-link:hover::after {
     height: clamp(85px, 16vh, 185px);
 }
 
-/* Each mascot tilts a different way on hover instead of all four moving in
-   lockstep - purely cosmetic variety, tied to their position in the grid. */
+/* Jedes Maskottchen kippt beim Hover in eine andere Richtung, statt dass sich alle gleich bewegen.
+   Nur für optische Abwechslung, abhängig von der Position im Grid. */
 .categories-grid .category-item:nth-child(1):hover .category-mascot {
     transform: translate(-50%, -4px) rotate(-9deg) scale(1.08);
 }
@@ -442,13 +446,12 @@ nav a.nav-link:hover::after {
     transform: translate(-50%, -4px) rotate(10deg) scale(1.08);
 }
 
-/* Peeking colour bar under each category card. It is a sibling of
-   .category-card (rendered before it in the markup), not a child - a child
-   with a negative z-index would end up hidden behind the card's own
-   background one moment, then in front of it once .category-card gets a
-   transform on hover (a transform opens a new stacking context, which a
-   negative z-index cannot escape). Being a plain sibling avoids that
-   entirely: normal DOM order already keeps it behind the card. */
+/* Die farbige Bar guckt unter jeder Category Card hervor.
+   Sie ist ein Sibling von .category-card im HTML, davor gerendert, nicht ein Kind davon.
+   Als Kind mit negativem z-index wäre sie mal hinter dem Hintergrund der Karte versteckt.
+   Sobald .category-card beim Hover ein transform bekommt, würde sie plötzlich davor liegen.
+   Ein transform öffnet nämlich einen neuen Stacking Context, da kommt ein negativer z-index nicht mehr raus.
+   Als einfacher Sibling gibt es das Problem gar nicht. Die normale HTML Reihenfolge hält sie schon hinter der Karte. */
 .category-bar {
     position: absolute;
     left: 0;
@@ -465,9 +468,8 @@ nav a.nav-link:hover::after {
     opacity: 0;
 }
 
-/* .category-card is an <a> (clicking it jumps to the matching filtered
-   Towers page), so it needs its link defaults reset back to plain-box
-   styling. */
+/* .category-card ist ein Link. Ein Klick springt zur passenden gefilterten Towers Seite.
+   Darum müssen die Standard Link Styles zurückgesetzt werden, damit es wie eine normale Box aussieht. */
 .category-card {
     display: block;
     text-decoration: none;
@@ -513,11 +515,15 @@ nav a.nav-link:hover::after {
     color: var(--Creme);
 }
 
-/* Towers overview page */
+/* Towers Übersichtsseite */
 
+/* Deckt body ab, darum braucht es den Verlauf hier nochmal. */
 .towers-page {
     min-height: 100vh;
     background-color: var(--Creme);
+    background-image: radial-gradient(circle at 12% 8%, rgba(232, 197, 126, 0.22), transparent 40%),
+                       radial-gradient(circle at 88% 92%, rgba(232, 197, 126, 0.16), transparent 40%);
+    background-attachment: fixed;
 }
 
 .towers-main {
@@ -651,8 +657,8 @@ nav a.nav-link:hover::after {
     background-color: var(--CatOrange);
 }
 
-/* Bloons page: no single colour fits "Normal" or "MOAB-Class" the way the
-   four tower categories each have their own, so these stay neutral. */
+/* Bloons Seite. Für "Normal" und "MOAB-Class" gibt es keine passende einzelne Farbe wie bei den vier Tower Kategorien.
+   Darum bleiben diese beiden neutral. */
 .filter-pill[data-filter="Normal"],
 .filter-pill[data-filter="MOAB-Class"] {
     background-color: #fff;
@@ -674,9 +680,8 @@ nav a.nav-link:hover::after {
     gap: 28px;
 }
 
-/* Shared by both the Towers and Bloons grids - on Towers it's an <a> to the
-   tower's detail page, on Bloons a plain <div> (no detail pages there), so
-   the link defaults are reset here but harmless on the div case too. */
+/* Wird von Towers und Bloons Grid benutzt. Auf beiden Seiten ist es ein Link zur jeweiligen Detailseite.
+   Darum werden hier die Standard Link Styles zurückgesetzt. */
 .tower-card {
     display: block;
     text-decoration: none;
@@ -699,9 +704,8 @@ nav a.nav-link:hover::after {
     box-shadow: 0 10px 18px rgba(0, 0, 0, 0.14);
 }
 
-/* Sibling of .tower-card, same reasoning as .category-bar above: it must
-   stay outside the card so the card's own hover transform can't trap it
-   inside a stacking context. */
+/* Sibling von .tower-card, gleicher Grund wie bei .category-bar oben.
+   Muss ausserhalb der Karte bleiben, sonst fängt der Hover transform der Karte sie in einem Stacking Context ein. */
 .tower-bar {
     position: absolute;
     left: 0;
@@ -730,9 +734,9 @@ nav a.nav-link:hover::after {
     overflow: hidden;
 }
 
-/* Plays once on hover start instead of just holding an end state - a
-   little jump/squash rather than the rotate+scale used elsewhere on the
-   site, so the towers grid doesn't feel like a copy of the home page. */
+/* Läuft einmal beim Hover Start ab statt einfach einen Endzustand zu halten.
+   Ein kleiner Hüpfer statt dem rotate und scale wie sonst auf der Seite.
+   So wirkt das Towers Grid nicht wie eine Kopie von der Startseite. */
 @keyframes hexagon-hop {
     0%, 100% { transform: translateY(0) scale(1); }
     35% { transform: translateY(-4px) scale(1.02); }
@@ -771,18 +775,17 @@ nav a.nav-link:hover::after {
     }
 }
 
-/* Tower detail page (/Towers/Details/{slug}) */
+/* Tower Detailseite (/Towers/Details/{slug}) */
 
 .tower-hero {
     position: relative;
     background: linear-gradient(120deg, var(--hero-light), var(--hero-dark));
 }
 
-/* Positioned relative to the container itself (not the full-bleed section)
-   so the reserved padding below and the buttons always line up, no matter
-   how wide the Bootstrap container ends up at a given breakpoint - pinning
-   them to the section's edges instead let them drift over the monkey art
-   on mid-width viewports. */
+/* Die Pfeile sind relativ zum Container selbst positioniert, nicht zur ganzen Section.
+   So passen sie immer zum padding, egal wie breit der Bootstrap Container gerade ist.
+   Vorher waren sie relativ zur Section positioniert.
+   Bei mittleren Bildschirmbreiten sind sie dann über das Affen Bild gerutscht. */
 .tower-hero-inner {
     position: relative;
     display: flex;
@@ -910,13 +913,12 @@ nav a.nav-link:hover::after {
     margin-top: 12px;
 }
 
-/* Bloon detail page (/Bloons/Details/{slug}) */
+/* Bloon Detailseite (/Bloons/Details/{slug}) */
 
-/* A fixed-size circle that clips its image, kept as a separate element from
-   the <img> itself - putting ImageScale's transform:scale() directly on an
-   element that also carries this background/border-radius would scale the
-   circle along with the artwork, making every bloon's badge a different
-   size instead of just evening out the balloon art inside it. */
+/* Ein Kreis mit fester Grösse, der das Bild abschneidet. Bewusst ein eigenes Element, nicht das <img> selbst.
+   Würde man transform:scale() von ImageScale direkt auf ein Element mit diesem Hintergrund und border-radius legen,
+   würde der Kreis mitskaliert werden. Dann wäre der Kreis bei jedem Bloon unterschiedlich gross,
+   statt dass nur das Ballon Bild darin ausgeglichen wird. */
 .bloon-hero-badge {
     display: flex;
     align-items: center;
@@ -1119,7 +1121,7 @@ nav a.nav-link:hover::after {
     }
 }
 
-/* Logged-in state in the header (_Navigation.cshtml) */
+/* Zustand im Header wenn eingeloggt (_Navigation.cshtml) */
 
 .account-group {
     display: flex;
@@ -1171,7 +1173,7 @@ nav a.nav-link:hover::after {
     color: var(--Gold);
 }
 
-/* Login / Register pages (/Account/Login, /Account/Register) */
+/* Login und Register Seiten (/Account/Login, /Account/Register) */
 
 .auth-page {
     min-height: 100vh;
@@ -1183,12 +1185,39 @@ nav a.nav-link:hover::after {
 }
 
 .auth-card {
+    position: relative;
     width: 100%;
     max-width: 420px;
     background-color: var(--Creme);
     border-radius: 28px;
     padding: 48px 44px;
     text-align: center;
+}
+
+/* Zum Abbrechen von Login/Register. Führt einfach zurück zur Startseite,
+   ohne Account. */
+.auth-close {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: var(--MutedGray);
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.auth-close svg {
+    width: 18px;
+    height: 18px;
+}
+
+.auth-close:hover {
+    background-color: var(--LightGreen);
+    color: var(--DarkGreen);
 }
 
 .auth-title {
@@ -1212,6 +1241,16 @@ nav a.nav-link:hover::after {
     margin-bottom: 18px;
 }
 
+.auth-message {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 600;
+    color: #1B4332;
+    background-color: var(--LightGreen);
+    border-radius: 10px;
+    padding: 10px 16px;
+    margin-bottom: 18px;
+}
+
 .auth-field {
     text-align: left;
     margin-bottom: 22px;
@@ -1225,7 +1264,8 @@ nav a.nav-link:hover::after {
     margin-bottom: 8px;
 }
 
-.auth-field input {
+.auth-field input,
+.auth-field select {
     width: 100%;
     font-family: 'Nunito', sans-serif;
     font-size: 1rem;
@@ -1233,9 +1273,11 @@ nav a.nav-link:hover::after {
     border-radius: 12px;
     border: 1px solid var(--Divider);
     background-color: #fff;
+    color: var(--Gray);
 }
 
-.auth-field input:focus {
+.auth-field input:focus,
+.auth-field select:focus {
     outline: 2px solid var(--DarkGreen);
 }
 

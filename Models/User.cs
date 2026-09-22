@@ -1,14 +1,20 @@
 namespace MonkeyArchive.Models;
 
-// A registered account, stored in-memory in AccountController's dictionary
-// (keyed by e-mail) rather than a database.
+// Ein registrierter Account. Liegt im Speicher in einem Dictionary im AccountController, per Username.
+// Es gibt keine echte Datenbank dafür.
 public class User
 {
-    public required string Email { get; set; }
+    public required string Username { get; set; }
     public required string Password { get; set; }
 
-    // Favoriting a tower isn't wired up on any page yet, so this stays
-    // empty for now - it exists so the Favorites page has somewhere to
-    // read from once that feature is built.
+    // Wird beim Passwort vergessen Ablauf gebraucht.
+    // Es gibt keinen E-Mail Server in diesem Projekt, darum gibt es keinen Reset Link per Mail.
+    // Wer die Frage richtig beantwortet, darf ein neues Passwort setzen.
+    public required string SecurityQuestion { get; set; }
+    public required string SecurityAnswer { get; set; }
+
+    // Das Favorisieren von Towers ist noch auf keiner Seite eingebaut.
+    // Darum ist die Liste im Moment immer leer.
+    // Sie ist schon da, damit die Favorites Seite später etwas zum Anzeigen hat.
     public List<string> FavoriteTowerSlugs { get; set; } = [];
 }

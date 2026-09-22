@@ -2,7 +2,7 @@
 @{
     ViewData["Title"] = "Towers";
 
-    // The five filter pills shown above the grid, in display order.
+    // Die fünf Filter Pills über dem Grid, in dieser Reihenfolge.
     var categories = new[] { "All", "Primary", "Military", "Magic", "Support" };
 }
 
@@ -13,10 +13,9 @@
         <div class="container">
             <h1 class="page-title">All Towers</h1>
 
-            @* Plain GET form: submitting reloads this page with the search
-               term as a query string parameter, filtered server-side in
-               TowersController.Index. The current category is carried along
-               as a hidden field so searching doesn't reset the active filter. *@
+            @* Ein normales GET Formular. Beim Absenden lädt die Seite neu mit dem Suchtext als Query Parameter.
+               Gefiltert wird dann in TowersController.Index.
+               Die aktuelle Kategorie läuft als verstecktes Feld mit, damit die Suche den Filter nicht zurücksetzt. *@
             <form method="get" asp-action="Index" class="search-bar">
                 <button type="submit" class="search-icon" aria-label="Search">
                     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -34,8 +33,8 @@
                 <input type="hidden" name="category" value="@Model.SelectedCategory">
             </form>
 
-            @* Each pill is a normal link carrying the current search term
-               along, so switching category keeps whatever was typed above. *@
+            @* Jede Pille ist ein normaler Link, der den aktuellen Suchtext mitnimmt.
+               So bleibt der eingetippte Text stehen, wenn man die Kategorie wechselt. *@
             <div class="filter-pills">
                 @foreach (var cat in categories)
                 {
@@ -51,7 +50,7 @@
             <div class="towers-grid">
                 @foreach (var tower in Model.Towers)
                 {
-                    // Category -> hexagon/bar colour, matching the home page's category cards.
+                    // Bestimmt die Hexagon und Bar Farbe aus der Kategorie, gleich wie bei den Category Cards auf der Startseite.
                     string colorVar = tower.Category switch
                     {
                         "Primary" => "var(--CatBlue)",
@@ -61,10 +60,10 @@
                         _ => "var(--Gray)"
                     };
 
-                    @* .tower-bar must stay a sibling *before* .tower-card (not a child)
-                       so it keeps rendering behind the card once the card gets a
-                       transform on hover - a transform opens a new stacking context,
-                       which would otherwise swallow a negatively z-indexed child bar. *@
+                    @* .tower-bar muss ein Sibling vor .tower-card bleiben, nicht ein Kind davon.
+                       Nur so bleibt die Bar sichtbar, wenn die Karte beim Hover ein transform bekommt.
+                       Ein transform öffnet nämlich einen neuen Stacking Context.
+                       Eine Bar mit negativem z-index als Kind würde darin einfach verschluckt. *@
                     <div class="tower-item" data-search-item data-name="@tower.Name.ToLowerInvariant()" style="--cat-color: @colorVar">
                         <div class="tower-bar"></div>
                         <a class="tower-card" asp-action="Details" asp-route-id="@tower.Slug">
@@ -77,9 +76,8 @@
                 }
             </div>
 
-            @* Always present so the live-search script can toggle it; the
-               inline style covers the no-JS case (category filter alone
-               already produced zero results server-side). *@
+            @* Ist immer im HTML, damit das Live Suche Script es ein und ausblenden kann.
+               Der inline style deckt den Fall ohne JavaScript ab, wenn der Kategorie Filter schon zu null Ergebnissen führt. *@
             <p class="no-results" data-no-results style="display:@(Model.Towers.Count == 0 ? "block" : "none")">No towers found.</p>
         </div>
     </main>

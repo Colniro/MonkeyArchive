@@ -2,9 +2,9 @@
 @{
     ViewData["Title"] = Model.Name;
 
-    // Category -> hero gradient (light to dark) and upgrade-card colour.
-    // Same four category colours as the overview grid, just stretched into
-    // a light->dark pair for the banner instead of a single flat tone.
+    // Bestimmt aus der Kategorie den Hero Farbverlauf (hell zu dunkel) und die Upgrade Karten Farbe.
+    // Es sind die gleichen vier Kategorie Farben wie im Übersicht Grid.
+    // Für das Banner werden sie aber zu einem hell dunkel Paar statt einer einzelnen Farbe.
     (string light, string dark, string card) palette = Model.Category switch
     {
         "Primary" => ("#3B82C4", "#0C447C", "#2f6da3"),

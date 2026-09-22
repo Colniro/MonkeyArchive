@@ -3,37 +3,30 @@ using MonkeyArchive.Models;
 
 namespace MonkeyArchive.Controllers;
 
-// Serves the "All Bloons" overview page (/Bloons). Same shape as
-// TowersController - fixed game data as an in-memory list, filtered
-// server-side by category and search term.
+// Zeigt die "Alle Bloons" Übersicht auf /Bloons.
+// Gleich aufgebaut wie TowersController. Feste Spieldaten als Liste im Speicher, gefiltert nach Kategorie und Suche.
 public class BloonsController : Controller
 {
     private static readonly List<Bloon> AllBloons =
     [
-        // ImageScale compensates for how much transparent padding each
-        // source PNG has around the actual balloon (measured via the
-        // image's alpha-channel bounding box) - without it, e.g. Yellow
-        // (balloon fills ~95% of its canvas) renders visibly larger than
-        // Black (~30%) at the same box size. MOAB-class art is already
-        // consistent, so those are left at the default 1.0.
+        // ImageScale gleicht den unterschiedlichen transparenten Rand der Bilder aus.
+        // Zum Beispiel füllt Yellow fast das ganze Bild, Black nur etwa 30 Prozent.
+        // Ohne diesen Wert wären die Ballons bei gleicher Boxgrösse unterschiedlich gross.
+        // Gemessen wurde das über die Alpha Kanal Box vom Bild. MOAB Bilder sind schon einheitlich, die bleiben bei 1.0.
         //
-        // Detail-page fields (RBE/Speed/IsLead/Layer/Immunities) are pulled
-        // from the same datamined BTD6 game files used for TowersController
-        // (maxHealth, speed, layerNumber, and the bloonProperties bitflag -
-        // bit0 = Lead, bit1 = immune to explosions, bit2 = immune to cold,
-        // bit3 = immune to energy, confirmed against Lead=1, DDT=3 and
-        // Zebra=6). IsCamo is hardcoded per-bloon instead:
-        // the JSON's own isCamo flag is unreliable (it reports false even
-        // for DDT), so this uses the well-known fact that DDT is the only
-        // one of these 17 base types that's inherently Camo - every other
-        // colour only becomes Camo as a per-round modifier, not as part of
-        // its identity. PopsInto/PopsIntoNote describe the reveal-on-pop
-        // chain, which isn't stored in that data source at all (there's no
-        // child-bloon mapping anywhere in it) - these instead reflect
-        // BTD6's well-established, unchanged-since-launch degrade mechanic
-        // (Blue -> Red, MOAB -> 4x Ceramic, etc.), with Ceramic and DDT
-        // called out as random reveals rather than a fixed result, since
-        // that's genuinely how the game picks their child bloon.
+        // Die Detail Felder (RBE, Speed, IsLead, Layer, Immunities) kommen aus den gleichen echten BTD6 Spieldaten wie bei TowersController.
+        // Das sind maxHealth, speed, layerNumber und das bloonProperties Bitflag.
+        // Bit 0 ist Lead, Bit 1 ist immun gegen Explosionen, Bit 2 ist immun gegen Kälte, Bit 3 ist immun gegen Energie.
+        // Geprüft wurde das an Lead=1, DDT=3 und Zebra=6.
+        // IsCamo ist dagegen für jeden Bloon von Hand eingetragen.
+        // Das isCamo Feld im JSON stimmt nämlich nicht, es steht dort auch bei DDT auf false.
+        // Bekannt ist aber, dass DDT von diesen 17 der einzige ist der von Natur aus Camo ist.
+        // Bei allen anderen Farben ist Camo nur eine Eigenschaft für einzelne Runden, keine feste Eigenschaft.
+        // PopsInto und PopsIntoNote zeigen was beim Platzen rauskommt.
+        // Das steht in den Spieldaten gar nicht drin, es gibt dort keine Zuordnung von Bloon zu Kind Bloon.
+        // Darum steht hier stattdessen die bekannte BTD6 Mechanik, die sich seit Release nicht geändert hat.
+        // Zum Beispiel wird Blue zu Red, MOAB wird zu 4x Ceramic.
+        // Bei Ceramic und DDT ist es im echten Spiel zufällig, darum steht dort ein Hinweistext statt einem festen Ergebnis.
         new Bloon
         {
             Name = "Red", Category = "Normal", Image = "red_bloon.png", Color = "#DC3E3E", ImageScale = 1.98,
@@ -69,11 +62,9 @@ public class BloonsController : Controller
             Rbe = 1, Speed = "87.5", IsCamo = false, IsLead = false, Layer = 5,
             PopsInto = [new BloonChild { Name = "Yellow", Count = 1 }]
         },
-        // Black/White/Lead/Zebra: the balloon art itself is near-black,
-        // near-white, mid-grey and black+white respectively, so matching
-        // the background to the same tone makes it disappear. These use a
-        // deliberately *different* lightness from the balloon so the
-        // silhouette still reads.
+        // Black, White, Lead und Zebra sind im Bild selbst schon fast schwarz, fast weiss, grau oder schwarz weiss.
+        // Ein Hintergrund in der gleichen Farbe würde den Ballon unsichtbar machen.
+        // Darum ist der Hintergrund bewusst anders hell, damit man die Form noch sieht.
         new Bloon
         {
             Name = "Black", Category = "Normal", Image = "black_bloon.png", Color = "#5A5A5A", ImageScale = 2.72,
@@ -128,14 +119,11 @@ public class BloonsController : Controller
             PopsIntoNote = "Pops into one random weaker bloon - Rainbow, Zebra, Black, White, or Lead. The exact result isn't fixed."
         },
 
-        // MOAB-class colours were originally guessed without looking at the
-        // actual art - corrected against what the images really show:
-        // MOAB is blue, BFB is red, ZOMG is a dark bomb with neon-green
-        // accents, DDT is dark camo, BAD is purple. Each background is
-        // still picked to sit apart in lightness from its (mostly dark)
-        // bomb body so the shape stays visible, and apart in hue from the
-        // similarly-coloured Normal bloon above so the two don't read as
-        // the same tier.
+        // Die MOAB Farben waren zuerst geraten, ohne die Bilder genau anzuschauen. Das wurde korrigiert.
+        // MOAB ist blau, BFB ist rot, ZOMG ist eine dunkle Bombe mit neongrünen Akzenten, DDT ist dunkel und camo, BAD ist lila.
+        // Jeder Hintergrund ist extra so gewählt, dass er heller ist als der meist dunkle Bombenkörper.
+        // So bleibt die Form gut sichtbar. Ausserdem ist der Farbton anders als beim ähnlich gefärbten Normal Bloon darüber,
+        // damit man die beiden Stufen nicht verwechselt.
         new Bloon
         {
             Name = "MOAB", Category = "MOAB-Class", Image = "moab_bloon.png", Color = "#1A4D8F",
@@ -174,8 +162,7 @@ public class BloonsController : Controller
         },
     ];
 
-    // Mirrors TowersController.Index: search and category filtering both
-    // driven by the query string, no JavaScript required to render results.
+    // Gleich wie TowersController.Index. Suche und Kategorie kommen aus dem Query String, kein JavaScript nötig.
     public IActionResult Index(string? search, string? category)
     {
         var bloons = AllBloons.AsEnumerable();
@@ -201,8 +188,8 @@ public class BloonsController : Controller
         return View(model);
     }
 
-    // /Bloons/Details/red - id is the bloon's slug (see Bloon.Slug), not its
-    // display name, so the URL stays readable without encoding.
+    // Zum Beispiel /Bloons/Details/red. Die id ist der Slug vom Bloon (siehe Bloon.Slug), nicht der Name.
+    // So bleibt die URL lesbar und muss nicht encodiert werden.
     public IActionResult Details(string id)
     {
         var index = AllBloons.FindIndex(b => b.Slug == id);
@@ -211,8 +198,8 @@ public class BloonsController : Controller
             return NotFound();
         }
 
-        // Previous/next arrows cycle through AllBloons in list order and
-        // wrap around at both ends, same as TowersController.Details.
+        // Die Pfeile gehen durch die AllBloons Liste in ihrer Reihenfolge, gleich wie bei TowersController.Details.
+        // Am Anfang und Ende springt es wieder um.
         var previous = AllBloons[(index - 1 + AllBloons.Count) % AllBloons.Count];
         var next = AllBloons[(index + 1) % AllBloons.Count];
         ViewData["PreviousSlug"] = previous.Slug;
@@ -220,9 +207,8 @@ public class BloonsController : Controller
         ViewData["NextSlug"] = next.Slug;
         ViewData["NextName"] = next.Name;
 
-        // The "Pops Into" card needs each child's image/scale to render its
-        // icon; child bloons only store a Name, so resolve those here
-        // instead of doing the lookup in the view.
+        // Die "Pops Into" Karte braucht Bild und Scale von jedem Kind Bloon.
+        // Ein BloonChild speichert aber nur den Namen. Darum wird das Bild hier im Controller gesucht und nicht in der View.
         ViewData["BloonImages"] = AllBloons.ToDictionary(b => b.Name, b => b.Image);
         ViewData["BloonScales"] = AllBloons.ToDictionary(b => b.Name, b => b.ImageScale);
 

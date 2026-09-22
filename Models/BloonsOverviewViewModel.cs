@@ -1,8 +1,7 @@
 namespace MonkeyArchive.Models;
 
-// Carries the already-filtered bloon list plus the current search/category
-// state back to the view, so the search box and the active filter pill can
-// be re-rendered exactly as the user left them after a page reload.
+// Gibt die gefilterte Bloon Liste an die View weiter. Trägt auch Suchtext und Kategorie mit.
+// So bleiben Suchfeld und Filter Pill nach einem Reload gleich wie vorher.
 public class BloonsOverviewViewModel
 {
     public required List<Bloon> Bloons { get; set; }

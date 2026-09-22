@@ -8,10 +8,9 @@
 </div>
 
 <section class="hero">
-    @* Floating (idle bob) lives on the wrapper, the hover pop-and-tilt on the
-       img itself - two separate elements because a CSS animation keeps
-       driving `transform` every frame, which would otherwise fight a
-       `:hover` rule trying to set `transform` on the very same element. *@
+    @* Das Schweben (idle bob) ist auf dem Wrapper, der Hover Effekt (pop und tilt) auf dem Bild selbst.
+       Das sind zwei verschiedene Elemente, weil eine CSS Animation transform ständig neu setzt.
+       Eine :hover Regel auf dem gleichen Element würde dann nicht funktionieren, weil die Animation gewinnt. *@
     <div class="bloon-float bloon-a"><img src="~/images/bloons/red_bloon.png" class="bloon" alt=""></div>
     <div class="bloon-float bloon-b"><img src="~/images/bloons/red_bloon.png" class="bloon" alt=""></div>
     <img src="~/images/assets/camo.png" class="decor-blob" alt="">
@@ -24,8 +23,6 @@
             <a asp-controller="Towers" asp-action="Index" class="btn btn-primary">view Towers</a>
             <a asp-controller="Bloons" asp-action="Index" class="btn btn-outline">view Bloons</a>
         </div>
-
-        
 
         <div class="categories">
             <div class="categories-line">

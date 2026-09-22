@@ -1,7 +1,6 @@
 @{
-    var loggedInEmail = Context.Session.GetString("UserEmail");
-    var isLoggedIn = !string.IsNullOrEmpty(loggedInEmail);
-    var displayName = isLoggedIn ? loggedInEmail!.Split('@')[0] : null;
+    var loggedInUsername = Context.Session.GetString("Username");
+    var isLoggedIn = !string.IsNullOrEmpty(loggedInUsername);
 }
 
 <header>
@@ -34,7 +33,7 @@
                         <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2" />
                         <path d="M4 20c0-4.418 3.582-8 8-8s8 3.582 8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
                     </svg>
-                    @displayName
+                    @loggedInUsername
                 </span>
                 <form method="post" asp-controller="Account" asp-action="Logout" class="logout-form">
                     <button type="submit" class="logout-btn">Log Out</button>

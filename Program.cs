@@ -1,10 +1,11 @@
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Fügt die Services hinzu.
 builder.Services.AddControllersWithViews();
 
-// Backs the login session cookie (AccountController stores the logged-in
-// user's e-mail here instead of using a database-backed auth scheme).
+// Für den Login Session Cookie.
+// Der AccountController speichert dort den Username vom eingeloggten Nutzer.
+// Es gibt kein Login System mit Datenbank dahinter.
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
@@ -14,11 +15,11 @@ builder.Services.AddSession(options =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Konfiguriert die HTTP Pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    // Der Standard HSTS Wert ist 30 Tage. Für richtige Produktion evtl anpassen, siehe https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -30,8 +31,8 @@ app.UseAuthorization();
 
 app.MapStaticAssets();
 
-// One convention-based route covers every controller: e.g. /Towers resolves
-// to TowersController.Index() with no extra route registration needed.
+// Eine Route reicht für alle Controller. Zum Beispiel geht /Towers automatisch zu TowersController.Index().
+// Es braucht keine extra Route pro Controller.
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")

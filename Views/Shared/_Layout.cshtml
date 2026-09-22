@@ -18,9 +18,8 @@
         @RenderBody()
     </main>
 
-    @* No jQuery/Bootstrap JS bundle: category filtering is plain server-side
-       Razor via query-string GET links. Individual pages can still opt into
-       a small script of their own (e.g. live search) through this section. *@
+    @* Es gibt kein jQuery/Bootstrap JS Bundle. Kategorie Filter läuft über normale Razor GET Links im Query String.
+       Einzelne Seiten können hier trotzdem ein eigenes kleines Script einbinden, zum Beispiel für die Live Suche. *@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
