@@ -17,9 +17,12 @@
                 </svg>
             </a>
 
-            <img src="~/images/bloons/@Model.Image" alt="@Model.Name" class="tower-hero-image bloon-hero-image"
-                 style="transform: scale(@Model.ImageScale.ToString("0.00", CultureInfo.InvariantCulture))">
+            <span class="tower-hero-image bloon-hero-badge">
+                <img src="~/images/bloons/@Model.Image" alt="@Model.Name" class="bloon-hero-image"
+                     style="transform: scale(@Model.ImageScale.ToString("0.00", CultureInfo.InvariantCulture))">
+            </span>
             <div>
+                <span class="bloon-category-badge">@Model.Category</span>
                 <h1 class="tower-hero-title">@Model.Name Bloon</h1>
                 <p class="tower-hero-desc">@Model.Description</p>
             </div>
@@ -43,30 +46,46 @@
                     <span class="stat-label">Speed</span>
                     <span class="stat-value">@Model.Speed</span>
                 </div>
+                <div class="stat-item">
+                    <span class="stat-label">Layer</span>
+                    <span class="stat-value">@Model.Layer / 13</span>
+                </div>
             </div>
 
             <div class="bloon-tags">
                 <span class="bloon-tag @(Model.IsCamo ? "active" : "")">@(Model.IsCamo ? "Camo" : "No Camo")</span>
                 <span class="bloon-tag @(Model.IsLead ? "active" : "")">@(Model.IsLead ? "Lead" : "No Lead")</span>
+                @foreach (var immunity in Model.Immunities)
+                {
+                    <span class="bloon-tag active">@immunity</span>
+                }
             </div>
 
             <h2 class="section-heading">Pops Into</h2>
 
-            @if (Model.PopsInto.Count == 0)
+            @if (Model.PopsIntoNote is not null)
+            {
+                <p class="no-results">@Model.PopsIntoNote</p>
+            }
+            else if (Model.PopsInto.Count == 0)
             {
                 <p class="no-results">This is the last layer - popping it removes the bloon for good.</p>
             }
             else
             {
                 <div class="pops-into-card">
-                    <img class="pops-into-icon" src="~/images/bloons/@Model.Image" alt="@Model.Name"
-                         style="transform: scale(@Model.ImageScale.ToString("0.00", CultureInfo.InvariantCulture))">
+                    <span class="pops-into-icon">
+                        <img src="~/images/bloons/@Model.Image" alt="@Model.Name"
+                             style="transform: scale(@Model.ImageScale.ToString("0.00", CultureInfo.InvariantCulture))">
+                    </span>
                     <span class="pops-into-arrow">&#8594;</span>
                     <div class="pops-into-results">
                         @foreach (var child in Model.PopsInto)
                         {
-                            <img class="pops-into-icon" src="~/images/bloons/@images[child.Name]" alt="@child.Name"
-                                 style="transform: scale(@scales[child.Name].ToString("0.00", CultureInfo.InvariantCulture))">
+                            <span class="pops-into-icon">
+                                <img src="~/images/bloons/@images[child.Name]" alt="@child.Name"
+                                     style="transform: scale(@scales[child.Name].ToString("0.00", CultureInfo.InvariantCulture))">
+                            </span>
                         }
                     </div>
                     <span class="pops-into-label">@string.Join(" + ", Model.PopsInto.Select(c => $"{c.Count}× {c.Name} Bloon"))</span>

@@ -30,8 +30,23 @@ public class Bloon
     public bool IsCamo { get; set; }
     public bool IsLead { get; set; }
 
+    // This bloon's position in BTD6's fixed layer order (Red=1 ... BAD=13),
+    // straight from the datamined layerNumber field - several bloons share
+    // a number (Black/White/Purple=6, Lead/Zebra=7, DDT/ZOMG=12) because
+    // that's genuinely how the game orders them, not a display bug.
+    public int Layer { get; set; }
+
+    // Damage immunities beyond Lead (which gets its own tag) - e.g. Black
+    // is immune to explosions. Empty for bloons with none.
+    public List<string> Immunities { get; set; } = [];
+
     // Empty for the weakest layer (Red) - popping it just removes the bloon.
     public List<BloonChild> PopsInto { get; set; } = [];
+
+    // Set instead of PopsInto for bloons whose reveal isn't a fixed chain
+    // (Ceramic and DDT pop into one random weaker layer in the real game,
+    // not one specific result) - shown as plain text instead of the icon row.
+    public string? PopsIntoNote { get; set; }
 
     // URL-friendly id used for the detail page route (/Bloons/Details/red).
     public string Slug => Name.ToLowerInvariant().Replace(" ", "-");
