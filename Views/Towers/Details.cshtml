@@ -1,6 +1,7 @@
 @model MonkeyArchive.Models.Tower
 @{
     ViewData["Title"] = Model.Name;
+    var isFavorited = ViewData["IsFavorited"] as bool? ?? false;
 
     // Bestimmt aus der Kategorie den Hero Farbverlauf (hell zu dunkel) und die Upgrade Karten Farbe.
     // Es sind die gleichen vier Kategorie Farben wie im Übersicht Grid.
@@ -30,6 +31,16 @@
             <div>
                 <h1 class="tower-hero-title">@Model.Name</h1>
                 <p class="tower-hero-desc">@Model.Description</p>
+
+                <form method="post" asp-controller="Towers" asp-action="ToggleFavorite" asp-route-id="@Model.Slug" class="favorite-form">
+                    <input type="hidden" name="returnUrl" value="@(Context.Request.Path + Context.Request.QueryString)">
+                    <button type="submit" class="favorite-btn @(isFavorited ? "active" : "")">
+                        <svg viewBox="0 0 24 24" fill="@(isFavorited ? "currentColor" : "none")" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 20.5s-7.5-4.6-10-9.3C0.3 7.7 2 4 5.6 4c2 0 3.6 1.1 4.4 2.6C10.8 5.1 12.4 4 14.4 4 18 4 19.7 7.7 22 11.2c-2.5 4.7-10 9.3-10 9.3z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+                        </svg>
+                        @(isFavorited ? "Favorited" : "Add to Favorites")
+                    </button>
+                </form>
             </div>
 
             <a class="tower-hero-nav tower-hero-nav-next" asp-action="Details" asp-route-id="@ViewData["NextSlug"]" aria-label="Next monkey: @ViewData["NextName"]" title="@ViewData["NextName"]">
@@ -57,7 +68,7 @@
                 </div>
                 <div class="stat-item">
                     <span class="stat-label">Range</span>
-                    <span class="stat-value">@(Model.Range < 0 ? "Unlimited" : Model.Range.ToString())</span>
+                    <span class="stat-value">@(Model.Range is null ? "Unlimited" : Model.Range.ToString())</span>
                 </div>
             </div>
             <p class="stat-caption">Stats on Medium difficulty - can change with updates</p>

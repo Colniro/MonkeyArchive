@@ -47,7 +47,8 @@ public class Bloon
     public string? PopsIntoNote { get; set; }
 
     // Id für die URL der Detailseite, zum Beispiel /Bloons/Details/red.
-    public string Slug => Name.ToLowerInvariant().Replace(" ", "-");
+    // Kommt direkt aus der Slug Spalte in der DB, wird nicht mehr aus dem Namen berechnet.
+    public required string Slug { get; set; }
 
     // Hintergrund für den Hero Bereich auf der Detailseite.
     // Wird aus der eigenen Farbe des Bloons berechnet, nicht aus einer Kategorie Palette wie bei Towers.

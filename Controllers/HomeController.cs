@@ -1,11 +1,19 @@
+using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using MonkeyArchive.Models;
-using System.Diagnostics;
+using MySqlConnector;
 
 namespace MonkeyArchive.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly string _connString;
+
+        public HomeController(IConfiguration config)
+        {
+            _connString = config.GetConnectionString("Default")!;
+        }
+
         public IActionResult Index()
         {
             return View();
@@ -16,6 +24,24 @@ namespace MonkeyArchive.Controllers
             return View();
         }
 
+        // Testseite für die Datenbankverbindung
+        public IActionResult DbTest()
+        {
+            var namen = new List<string>();
+
+            using var conn = new MySqlConnection(_connString);
+            conn.Open();
+
+            using var cmd = new MySqlCommand("SELECT Name FROM Tower", conn);
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                namen.Add(reader.GetString(0));
+            }
+
+            return View(namen);
+        }
+
         // Geheime Seite, verlinkt nirgends im Menü. Nur zum Spass, kein
         // richtiger Tower.
         [Route("/elprimo")]
@@ -23,7 +49,6 @@ namespace MonkeyArchive.Controllers
         {
             return View();
         }
-
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

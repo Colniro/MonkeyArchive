@@ -1,0 +1,18 @@
+ID,CategoryId,Slug,Name,Description,ImageFileName,ColorHex,ImageScale,Rbe,Speed,IsCamo,IsLead,Layer,GameVersion,PopsIntoNote
+1,1,"red","Red","The weakest bloon - a single hit pops it for good.","red_bloon.png","#DC3E3E",1.98,1,25,0,0,1,\N,\N
+2,1,"blue","Blue","A little tougher than Red and slightly faster.","blue_bloon.png","#2F80ED",1.84,1,35,0,0,2,\N,\N
+3,1,"green","Green","Faster still, popping into a Blue underneath.","green_bloon.png","#4F9A3C",1.73,1,45,0,0,3,\N,\N
+4,1,"yellow","Yellow","Noticeably quick, outrunning most early towers' fire rate.","yellow_bloon.png","#F2C94C",0.89,1,80,0,0,4,\N,\N
+5,1,"pink","Pink","The fastest of the basic colours, testing your reaction time.","pink_bloon.png","#F2789F",0.87,1,87.5,0,0,5,\N,\N
+6,1,"black","Black","Immune to explosive damage, and splits into two Pinks.","black_bloon.png","#5A5A5A",2.72,1,45,0,0,6,\N,\N
+7,1,"white","White","Immune to freezing effects, and also splits into two Pinks.","white_bloon.png","#7C828A",2.69,1,50,0,0,6,\N,\N
+8,1,"purple","Purple","Immune to energy and magic damage, popping into a single Pink.","purple_bloon.png","#9B51E0",0.89,1,75,0,0,6,\N,\N
+9,1,"lead","Lead","Immune to sharp damage until popped by explosives or magic.","lead_bloon.png","#2E3236",0.88,1,25,0,1,7,\N,\N
+10,1,"zebra","Zebra","Combines Black's and White's immunities in one tricky package.","zebra_bloon.png","#808080",1.74,1,45,0,0,7,\N,\N
+11,1,"rainbow","Rainbow","A colourful heavyweight that reveals two Zebras when popped.","rainbow_bloon.png","linear-gradient(135deg, #E5484D, #F2994E, #F2C94C, #27AE60, #2F80ED, #9B51E0)",1.57,1,55,0,0,8,\N,\N
+12,1,"ceramic","Ceramic","A tough shell hiding a random weaker bloon underneath.","ceramic_bloon.png","#8B4A2B",0.97,10,62.5,0,0,9,\N,"Pops into one random weaker bloon - Rainbow, Zebra, Black, White, or Lead. The exact result isn't fixed."
+13,2,"moab","MOAB","The first MOAB-class blimp, unleashing four Ceramics when destroyed.","moab_bloon.png","#1A4D8F",1.0,200,25,0,0,10,\N,\N
+14,2,"bfb","BFB","A colossal blimp that splits into four MOABs.","bfb_bloon.png","#A8241F",1.0,700,6.25,0,0,11,\N,\N
+15,2,"zomg","ZOMG","One of the toughest blimps in the game, revealing four BFBs.","zomg_bloon.png","#4A6B23",1.0,4000,4.5,0,0,12,\N,\N
+16,2,"ddt","DDT","A stealthy, lead, and fast blimp that's tough to pin down.","ddt_bloon.png","#4A5560",1.0,400,66,1,1,12,\N,"Pops into one random weaker bloon layer, similar to Ceramic - the exact result isn't fixed."
+17,2,"bad","BAD","The final blimp tier - immensely tough and worth defending against.","bad_bloon.png","#6B1F7A",1.0,20000,4.5,0,0,13,\N,\N

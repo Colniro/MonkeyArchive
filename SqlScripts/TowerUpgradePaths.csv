@@ -1,0 +1,67 @@
+ID,TowerId,PathLabelId,Name,Description,Price
+1,1,1,"Ultra-Juggernaut","Hurls a massive spiked Juggernaut that splits into two more on impact.",15000
+2,1,2,"Plasma Monkey Fan Club","Turns all nearby Dart Monkeys into Plasma Monkeys with boosted stats.",45000
+3,1,3,"Crossbow Master","Fires a devastating bolt with huge damage, pierce, and range.",21500
+4,2,1,"Glaive Lord","Summons orbiting glaives and rains down glaives across the whole screen.",32500
+5,2,2,"Perma Charge","A permanent supercharged boomerang with huge pierce and damage.",35000
+6,2,3,"MOAB Domination","Massively boosts damage against MOAB-class Bloons.",50000
+7,3,1,"Bloon Crush","Crushes nearby Bloons in a huge shockwave, stunning MOAB-class Bloons.",55000
+8,3,2,"MOAB Eliminator","Fires missiles that deal heavy bonus damage to MOAB-class Bloons.",26000
+9,3,3,"Bomb Blitz","Rapidly fires a barrage of explosive shells.",30000
+10,4,1,"Inferno Ring","Surrounds the tower in a ring of fire that continuously burns Bloons.",45500
+11,4,2,"Super Maelstrom","Launches a devastating vortex of blades that pulls in and shreds Bloons.",15000
+12,4,3,"The Tack Zone","Fires a huge number of tacks in every direction at once.",20000
+13,5,1,"Super Brittle","Bloons hit by ice take massively increased damage from all sources.",28000
+14,5,2,"Absolute Zero","Freezes every Bloon on screen and briefly stuns MOAB-class Bloons.",21000
+15,5,3,"Icicle Impale","Fires sharp icicles that pierce through many Bloons.",30000
+16,6,1,"The Bloon Solver","Glue does heavy damage over time and dissolves Bloons completely.",22500
+17,6,2,"Glue Storm","Covers the entire screen in glue, slowing every Bloon.",16000
+18,6,3,"Super Glue","Thicker glue that deals extra damage over a longer duration.",24000
+19,7,1,"Cripple MOAB","Shots against MOAB-class Bloons massively slow and weaken them.",32000
+20,7,2,"Elite Sniper","Faster firing and bonus damage against Ceramic Bloons.",12000
+21,7,3,"Elite Defender","Automatically destroys any Bloon that gets too close to the exit.",14900
+22,8,1,"Sky Shredder","Fires a relentless spray of darts while flying over the track.",42500
+23,8,2,"Tsar Bomba","Drops a single massive bomb that obliterates everything in a huge blast.",26000
+24,8,3,"Flying Fortress","A heavily armed plane that fires missiles and razor darts constantly.",90000
+25,9,1,"Apache Prime","A powerful gunship with missiles that deal heavy damage to MOAB-class Bloons.",45000
+26,9,2,"Special Poperations","Fires a special weapon with excellent all-round popping power.",30000
+27,9,3,"Comanche Commander","A faster, more heavily armed chopper with improved missiles.",35000
+28,10,1,"The Biggest One","Fires a massive shell that devastates a huge area on impact.",36000
+29,10,2,"Pop and Awe","Shells burn Bloons and deal heavy bonus damage to MOAB-class Bloons.",38000
+30,10,3,"Blooncineration","Shells ignite the ground, continuously burning Bloons that pass through.",40000
+31,11,1,"Ray of Doom","Fires a continuous, devastating laser beam that melts through Bloons.",75000
+32,11,2,"M.A.D","Fires a barrage of missiles that deal heavy damage to MOAB-class Bloons.",65000
+33,11,3,"Bloon Exclusion Zone","An energy field that pushes back and damages nearby Bloons.",58000
+34,12,1,"Archmage","Summons powerful magic hands that repeatedly slam nearby Bloons.",32000
+35,12,2,"Wizard Lord Phoenix","Commands a phoenix that burns Bloons and revives fallen wizards.",50000
+36,12,3,"Soulbind","Curses Bloons so that popping one damages others nearby.",26500
+37,13,1,"True Sun God","A godlike being that fires devastating sun blades and boosts nearby Super Monkeys.",500000
+38,13,2,"The Anti-Bloon","A being of pure power that destroys everything in its path.",70000
+39,13,3,"Legend of the Night","A cloaked hero that fires piercing energy waves across the screen.",165650
+40,14,1,"Grandmaster Ninja","Master of throwing stars, striking with blinding speed and precision.",35000
+41,14,2,"Grand Saboteur","Plants bombs on Bloons that detonate and disable MOAB-class Bloons.",22000
+42,14,3,"Master Bomber","Throws explosive shurikens that deal heavy area damage.",40000
+43,15,1,"Permanent Brew","A permanent, powerful buff that boosts all nearby towers' damage and speed.",48000
+44,15,2,"Total Transformation","Instantly turns a Bloon into a much weaker one.",45000
+45,15,3,"Bloon Master Alchemist","Acid flasks corrode Bloons and deal heavy damage over time.",40000
+46,16,1,"Superstorm","Summons a raging storm that strikes Bloons with lightning and rain.",60000
+47,16,2,"Spirit of the Forest","A powerful nature spirit that buffs nearby towers and damages Bloons.",35000
+48,16,3,"Avatar of Wrath","A fiery avatar that hurls flaming boulders at Bloons.",45000
+49,17,1,"Lord of the Abyss","Summons sea creatures and buffs nearby towers with the power of the deep.",23000
+50,17,2,"Popseidon","A powerful trident strike that deals heavy damage across the water.",52000
+51,17,3,"The Final Harmonic","A resonant song that boosts and empowers all nearby towers.",25000
+52,18,1,"Banana Central","A massive banana processing facility that generates huge amounts of cash.",115000
+53,18,2,"Monkey-Nomics","Generates a steady, powerful stream of passive income.",100000
+54,18,3,"Monkey Wall Street","Invests bananas for a chance at a huge cash payout.",70000
+55,19,1,"Super Mines","Deploys powerful mines that deal massive damage to MOAB-class Bloons.",125000
+56,19,2,"Carpet of Spikes","Covers the entire track in a thick carpet of spikes.",41000
+57,19,3,"Perma-Spike","Produces spikes that never wear out and pop more Bloons.",30000
+58,20,1,"Primary Expertise","Massively boosts the power of all Primary monkeys in range.",25000
+59,20,2,"Homeland Defense","Automatically attacks Bloons that get too close to the exit.",40000
+60,20,3,"Monkeyopolis","A thriving monkey city that boosts range and grants extra income.",5000
+61,21,1,"Sentry Paragon","Builds an incredibly powerful sentry that fires devastating projectiles.",32000
+62,21,2,"Ultraboost","Massively boosts the pierce and attack speed of all nearby towers.",72000
+63,21,3,"XXXL Trap","Builds a giant trap that deals massive damage when triggered.",45000
+64,22,1,"Megalodon","Summons a giant shark that devours Bloons near water.",45000
+65,22,2,"Giganotosaurus","Commands a massive dinosaur that tramples and crushes Bloons.",60000
+66,22,3,"Pouakai","Summons a giant bird of prey that swoops down on Bloons.",30000

@@ -17,11 +17,12 @@ public class Tower
     public int Cost { get; set; }
     public int Damage { get; set; }
     public int Pierce { get; set; }
-    // -1 heisst die Reichweite ist unendlich, zum Beispiel bei Sniper Monkey oder Dartling Gunner.
-    // Das ist keine echte Zahl auf dem Spielfeld.
-    public int Range { get; set; }
+    // null heisst die Reichweite ist unendlich, zum Beispiel bei Sniper Monkey oder Dartling Gunner.
+    // Das ist keine echte Zahl auf dem Spielfeld. So steht es auch in der DB Spalte Range.
+    public int? Range { get; set; }
     public List<TowerUpgradePath> UpgradePaths { get; set; } = [];
 
     // Id für die URL der Detailseite, zum Beispiel /Towers/Details/dart-monkey.
-    public string Slug => Name.ToLowerInvariant().Replace(" ", "-");
+    // Kommt direkt aus der Slug Spalte in der DB, wird nicht mehr aus dem Namen berechnet.
+    public required string Slug { get; set; }
 }

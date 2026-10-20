@@ -1,0 +1,23 @@
+ID,CategoryId,Slug,Name,Description,ImageFileName,Cost,Damage,Pierce,Range,GameVersion
+1,1,"dart-monkey","Dart Monkey","Throws a single dart at nearby Bloons. Short range and low pierce but cheap.","dart_monkey.png",200,1,2,32,\N
+2,1,"boomerang-monkey","Boomerang Monkey","Throws a boomerang that hits Bloons on the way out and the way back.","boomerang_monkey.png",315,1,4,43,\N
+3,1,"bomb-shooter","Bomb Shooter","Lobs an explosive shell that pops a cluster of Bloons in an area.","canon_monkey.png",375,1,22,40,\N
+4,1,"tack-shooter","Tack Shooter","Fires 8 tacks in every direction at once, great for close-range pops.","tac_shooter_monkey.png",260,1,1,23,\N
+5,1,"ice-monkey","Ice Monkey","Freezes nearby Bloons solid, stopping them and popping Frozen and Lead.","ice_monkey.png",400,1,40,20,\N
+6,1,"glue-gunner","Glue Gunner","Coats a Bloon in glue, slowing it down and weakening it over time.","glue_gunner_monkey.png",225,1,1,46,\N
+7,2,"sniper-monkey","Sniper Monkey","Snipes a single Bloon anywhere on screen with a precise, powerful shot.","sniper_monkey.png",350,2,1,\N,\N
+8,2,"monkey-ace","Monkey Ace","Flies over the track dropping darts, with adjustable patrol routes.","monkey_ace_monkey.png",800,1,5,22,\N
+9,2,"heli-pilot","Heli Pilot","A mobile chopper that can be flown anywhere on the map to intercept Bloons.","heli_pilot_monkey.png",1500,1,3,22,\N
+10,2,"mortar-monkey","Mortar Monkey","Lobs a shell to a targeted spot on the map, popping Bloons in a blast radius.","mortar_monkey.png",600,2,25,30,\N
+11,2,"dartling-gunner","Dartling Gunner","A rapid-fire turret that can be aimed anywhere on screen.","dartlin_gunner_monkey.png",850,1,1,\N,\N
+12,3,"wizard-monkey","Wizard Monkey","Hurls bolts of magic at Bloons, popping Lead without help.","wizard_monkey.png",250,1,3,40,\N
+13,3,"super-monkey","Super Monkey","Fires a rapid stream of darts with great range, damage, and speed.","super_monkey_monkey.png",2500,1,1,50,\N
+14,3,"ninja-monkey","Ninja Monkey","Throws fast, silent shurikens and can spot Camo Bloons.","ninja_monkey.png",400,1,2,40,\N
+15,3,"alchemist","Alchemist","Brews potions that buff nearby towers or corrode Bloons with acid.","alchemist_monkey.png",550,1,1,45,\N
+16,3,"druid","Druid","Channels the power of nature to strike Bloons with thorns and lightning.","druid_monkey.png",400,1,1,35,\N
+17,3,"mermonkey","Mermonkey","An aquatic support monkey that buffs nearby towers, strongest near water.","mermaid_monkey.png",300,2,2,28,\N
+18,4,"banana-farm","Banana Farm","Grows bananas over time that can be collected for extra income.","banana_farm_monkey.png",1250,0,0,40,\N
+19,4,"spike-factory","Spike Factory","Produces piles of spikes on the track that pop passing Bloons.","spike_factory_monkey.png",1000,1,5,34,\N
+20,4,"monkey-village","Monkey Village","Boosts the range, pierce, or attack speed of nearby towers.","village.png",1200,0,0,40,\N
+21,4,"engineer-monkey","Engineer Monkey","Builds sentry guns and gives nearby towers extra pierce.","engineer_monkey.png",350,1,3,40,\N
+22,4,"beast-handler","Beast Handler","Commands loyal animal companions to fight alongside your towers.","beast_handler_monkey.png",250,1,1,20,\N

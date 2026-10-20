@@ -1,4 +1,4 @@
-@model List<string>
+@model List<MonkeyArchive.Models.Tower>
 @{
     ViewData["Title"] = "Favorites";
 }
@@ -10,10 +10,36 @@
         <div class="container">
             <h1 class="page-title">Your Favorites</h1>
 
-            @* Das Favorisieren ist noch nirgends eingebaut, darum ist Model hier immer leer.
-               Die Seite gibt es trotzdem schon, damit der Nav Link funktioniert.
-               Sie nutzt auch schon das Grid Layout von der Towers Seite, für später. *@
-            <p class="no-results">You haven't favorited any monkeys yet.</p>
+            @if (Model.Count == 0)
+            {
+                <p class="no-results">You haven't favorited any monkeys yet.</p>
+            }
+            else
+            {
+                <div class="towers-grid">
+                    @foreach (var tower in Model)
+                    {
+                        string colorVar = tower.Category switch
+                        {
+                            "Primary" => "var(--CatBlue)",
+                            "Military" => "var(--CatGreen)",
+                            "Magic" => "var(--CatPurple)",
+                            "Support" => "var(--CatOrange)",
+                            _ => "var(--Gray)"
+                        };
+
+                        <div class="tower-item" style="--cat-color: @colorVar">
+                            <div class="tower-bar"></div>
+                            <a class="tower-card" asp-controller="Towers" asp-action="Details" asp-route-id="@tower.Slug">
+                                <div class="tower-hexagon">
+                                    <img src="~/images/monkeys/@tower.Image" alt="@tower.Name">
+                                </div>
+                                <p>@tower.Name</p>
+                            </a>
+                        </div>
+                    }
+                </div>
+            }
         </div>
     </main>
 </div>

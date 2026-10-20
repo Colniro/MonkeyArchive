@@ -876,6 +876,48 @@ nav a.nav-link:hover::after {
     max-width: 640px;
 }
 
+.favorite-form {
+    margin-top: 18px;
+}
+
+.favorite-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    color: #fff;
+    background-color: rgba(255, 255, 255, 0.14);
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-radius: 999px;
+    padding: 10px 22px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.favorite-btn svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+.favorite-btn:hover {
+    border-color: #fff;
+    background-color: rgba(255, 255, 255, 0.22);
+}
+
+.favorite-btn.active {
+    background-color: #E8577A;
+    border-color: #E8577A;
+    color: #fff;
+}
+
+.favorite-btn.active:hover {
+    background-color: #D43F63;
+    border-color: #D43F63;
+}
+
 .stat-panel {
     background-color: var(--DarkGreen);
     border-radius: 20px;
