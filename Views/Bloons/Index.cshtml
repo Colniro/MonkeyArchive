@@ -4,9 +4,50 @@
 
     // Die zwei Filter Pills über dem Grid, in dieser Reihenfolge.
     var categories = new[] { "All", "Normal", "MOAB-Class" };
+
+    // Deko an den Seitenrändern für grosse Bildschirme (Regeln in site.css
+    // unter .side-decor). Side ist "left" oder "right", Edge der Abstand zu
+    // diesem Rand. Negative Werte lassen den Ballon über die Kante hinausragen.
+    // Top ist Prozent der Fensterhöhe, nicht Pixel: die Ebene ist position: fixed
+    // und muss auf jeder Fensterhöhe passen.
+    // Duration und Delay sind pro Ballon anders, sonst wippen alle im Gleichschritt.
+    (string Side, int Edge, int Top, int Width, string Duration, string Delay)[] decorSlots =
+    [
+        ("left", -24, 6, 86, "4.6s", "0s"),
+        ("left", 48, 22, 58, "5.4s", "1.2s"),
+        ("left", 4, 40, 74, "4.2s", "2.4s"),
+        ("left", 60, 60, 52, "5.8s", "0.6s"),
+        ("left", -18, 78, 80, "5.0s", "1.7s"),
+        ("right", -20, 10, 82, "4.4s", "0.3s"),
+        ("right", 52, 28, 56, "5.6s", "2.1s"),
+        ("right", 8, 48, 76, "4.8s", "1.0s"),
+        ("right", 44, 68, 60, "5.2s", "2.7s"),
+        ("right", -26, 84, 88, "4.0s", "1.5s")
+    ];
 }
 
 <div class="towers-page">
+    @* Die Ballons kommen aus der gerade gezeigten Liste, gleichmässig verteilt.
+       So passt die Deko automatisch zum Filter und zur Suche.
+       Die Breite wird mit ImageScale multipliziert, damit jeder Ballon am Schluss
+       ungefähr gleich gross aussieht (siehe ImageScale im Bloon Model). *@
+    <div class="side-decor" aria-hidden="true">
+        @if (Model.Bloons.Count > 0)
+        {
+            @for (var i = 0; i < decorSlots.Length; i++)
+            {
+                var slot = decorSlots[i];
+                var bloon = Model.Bloons[i * Model.Bloons.Count / decorSlots.Length % Model.Bloons.Count];
+
+                <div class="bloon-float side-item"
+                     style="@(slot.Side): @(slot.Edge)px; top: @(slot.Top)%; animation-duration: @slot.Duration; animation-delay: @slot.Delay;">
+                    <img src="~/images/bloons/@bloon.Image" alt="" loading="lazy"
+                         style="width: @((int)Math.Round(slot.Width * bloon.ImageScale))px;">
+                </div>
+            }
+        }
+    </div>
+
     <partial name="_Navigation" />
 
     <main class="towers-main">
@@ -57,7 +98,7 @@
                     <div class="tower-item" data-search-item data-name="@bloon.Name.ToLowerInvariant()" style="--cat-color: @bloon.Color">
                         <div class="tower-bar"></div>
                         <a class="tower-card" asp-action="Details" asp-route-id="@bloon.Slug">
-                            <div class="tower-hexagon">
+                            <div class="tower-hexagon" data-skeleton>
                                 <img src="~/images/bloons/@bloon.Image" alt="@bloon.Name"
                                      style="transform: scale(@bloon.ImageScale.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture))">
                             </div>
@@ -74,4 +115,5 @@
 
 @section Scripts {
     <script src="~/js/list-search.js" asp-append-version="true"></script>
+    <script src="~/js/skeleton.js" asp-append-version="true"></script>
 }

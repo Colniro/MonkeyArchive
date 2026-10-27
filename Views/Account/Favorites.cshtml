@@ -31,7 +31,7 @@
                         <div class="tower-item" style="--cat-color: @colorVar">
                             <div class="tower-bar"></div>
                             <a class="tower-card" asp-controller="Towers" asp-action="Details" asp-route-id="@tower.Slug">
-                                <div class="tower-hexagon">
+                                <div class="tower-hexagon" data-skeleton>
                                     <img src="~/images/monkeys/@tower.Image" alt="@tower.Name">
                                 </div>
                                 <p>@tower.Name</p>
@@ -43,3 +43,7 @@
         </div>
     </main>
 </div>
+
+@section Scripts {
+    <script src="~/js/skeleton.js" asp-append-version="true"></script>
+}

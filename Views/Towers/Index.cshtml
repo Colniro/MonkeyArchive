@@ -4,9 +4,40 @@
 
     // Die fünf Filter Pills über dem Grid, in dieser Reihenfolge.
     var categories = new[] { "All", "Primary", "Military", "Magic", "Support" };
+
+    // Deko an den Seitenrändern für grosse Bildschirme (Regeln in site.css
+    // unter .side-decor). Side ist "left" oder "right", Edge der Abstand zu
+    // diesem Rand. Negative Werte lassen den Affen über die Kante hinausragen.
+    // Top ist Prozent der Fensterhöhe, nicht Pixel: die Ebene ist position: fixed
+    // und muss auf jeder Fensterhöhe passen.
+    (string Side, int Edge, int Top, int Width)[] decorSlots =
+    [
+        ("left", -70, 6, 240),
+        ("left", 10, 36, 175),
+        ("left", -80, 66, 255),
+        ("right", -60, 12, 225),
+        ("right", 20, 44, 170),
+        ("right", -70, 72, 245)
+    ];
 }
 
 <div class="towers-page">
+    @* Die Affen kommen aus der gerade gezeigten Liste, gleichmässig verteilt.
+       So passt die Deko automatisch zum Kategorie Filter und zur Suche. *@
+    <div class="side-decor" aria-hidden="true">
+        @if (Model.Towers.Count > 0)
+        {
+            @for (var i = 0; i < decorSlots.Length; i++)
+            {
+                var slot = decorSlots[i];
+                var tower = Model.Towers[i * Model.Towers.Count / decorSlots.Length % Model.Towers.Count];
+
+                <img class="side-monkey" src="~/images/monkeys/@tower.Image" alt="" loading="lazy"
+                     style="@(slot.Side): @(slot.Edge)px; top: @(slot.Top)%; width: @(slot.Width)px;">
+            }
+        }
+    </div>
+
     <partial name="_Navigation" />
 
     <main class="towers-main">
@@ -67,7 +98,7 @@
                     <div class="tower-item" data-search-item data-name="@tower.Name.ToLowerInvariant()" style="--cat-color: @colorVar">
                         <div class="tower-bar"></div>
                         <a class="tower-card" asp-action="Details" asp-route-id="@tower.Slug">
-                            <div class="tower-hexagon">
+                            <div class="tower-hexagon" data-skeleton>
                                 <img src="~/images/monkeys/@tower.Image" alt="@tower.Name">
                             </div>
                             <p>@tower.Name</p>
@@ -85,4 +116,5 @@
 
 @section Scripts {
     <script src="~/js/list-search.js" asp-append-version="true"></script>
+    <script src="~/js/skeleton.js" asp-append-version="true"></script>
 }

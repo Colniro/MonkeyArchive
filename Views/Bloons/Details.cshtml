@@ -4,9 +4,69 @@
     ViewData["Title"] = Model.Name + " Bloon";
     var images = (Dictionary<string, string>)ViewData["BloonImages"]!;
     var scales = (Dictionary<string, double>)ViewData["BloonScales"]!;
+
+    // Deko im Hintergrund für grosse Fenster (Regeln in site.css unter .bloon-decor).
+    // Drei Teile: der Bloon selbst gross und angeschnitten am rechten Rand,
+    // die Symbole seiner Immunitäten am linken Rand und in den unteren Ecken
+    // Haufen aus dem was beim Platzen übrig bleibt.
+
+    // Je weiter unten in der Layer Kette, desto grösser die Haufen.
+    // Rbe taugt dafür nicht, das steht bei elf von siebzehn Bloons auf 1.
+    int PileCount(int layer) => layer switch
+    {
+        <= 3 => 3,
+        <= 6 => 4,
+        <= 8 => 5,
+        <= 11 => 7,
+        _ => 9
+    };
+
+    // Mittelpunkte der Bilder in der 340x280 Box eines Haufens, von unten nach oben.
+    // Kein Grid, die Ballons überlappen absichtlich damit es wie ein Haufen aussieht.
+    (int X, int Y, int Size, int Rot)[] pileSlots =
+    [
+        (80, 60, 120, -10),
+        (180, 70, 140, 8),
+        (269, 63, 118, 16),
+        (123, 141, 126, -16),
+        (215, 153, 130, 12),
+        (50, 116, 100, 22),
+        (271, 137, 106, -20),
+        (164, 219, 118, -6),
+        (238, 200, 96, 18)
+    ];
+
+    // Was in den beiden unteren Ecken liegt. Bei zwei Kindern bekommt jede Ecke ein
+    // eigenes, bei einem Kind beide das gleiche. Red platzt zu nichts und bei Ceramic
+    // und DDT ist das Ergebnis zufällig (PopsIntoNote). In diesen Fällen liegt
+    // darum der Bloon selbst in den Ecken.
+    var pileNames = Model.PopsInto.Count switch
+    {
+        0 => new[] { Model.Name, Model.Name },
+        1 => new[] { Model.PopsInto[0].Name, Model.PopsInto[0].Name },
+        _ => new[] { Model.PopsInto[0].Name, Model.PopsInto[1].Name }
+    };
+
+    var pileCount = PileCount(Model.Layer);
+
+    // Nur die Symbole die dieser Bloon wirklich hat. Ist oft leer, zum Beispiel bei
+    // Red oder MOAB. Dann bleibt der linke Rand einfach frei.
+    var immunitySymbols = new List<string>();
+    if (Model.IsCamo) { immunitySymbols.Add("Camo"); }
+    if (Model.IsLead) { immunitySymbols.Add("Lead"); }
+    // Model.Immunities heisst für die Tags schon "Immune to Explosions".
+    // Hier braucht es nur den nackten Namen als Schlüssel fuer das Symbol.
+    immunitySymbols.AddRange(Model.Immunities.Select(i => i.Replace("Immune to ", "", StringComparison.Ordinal)));
+
+    // Die Bloon Bilder haben unterschiedlich viel transparenten Rand, siehe ImageScale
+    // im Bloon Model. Statt wie sonst transform: scale() zu nehmen wird hier gleich die
+    // Breite damit multipliziert. So ist der sichtbare Ballon am Schluss ungefähr
+    // baseWidth gross, egal welches Bild, und es braucht keinen Wrapper mit
+    // overflow: hidden drumherum.
+    int ScaledWidth(double baseWidth, double imageScale) => (int)Math.Round(baseWidth * imageScale);
 }
 
-<div class="towers-page">
+<div class="towers-page bloon-page">
     <partial name="_Navigation" />
 
     <section class="tower-hero" style="background: @Model.HeroBackground;">
@@ -36,6 +96,76 @@
     </section>
 
     <main class="towers-main">
+        <div class="bloon-decor" aria-hidden="true">
+            @* Der Bloon selbst, gross und am rechten Rand angeschnitten. *@
+            <img class="bloon-ghost" src="~/images/bloons/@Model.Image" alt="" loading="lazy"
+                 style="width: @(ScaledWidth(340, Model.ImageScale))px;">
+
+            @* Ein Haufen pro untere Ecke. *@
+            @for (var c = 0; c < pileNames.Length; c++)
+            {
+                var pileName = pileNames[c];
+                <div class="bloon-pile @(c == 0 ? "bloon-pile-left" : "bloon-pile-right")">
+                    @for (var i = 0; i < pileCount; i++)
+                    {
+                        var slot = pileSlots[i];
+                        // Kleiner Versatz pro Ecke und Platz, damit die zwei Haufen
+                        // nicht genau gleich aussehen wenn in beiden das gleiche liegt.
+                        var offsetX = (i * 37 + c * 53) % 15 - 7;
+                        var offsetY = (i * 29 + c * 41) % 13 - 6;
+                        var offsetRot = (i * 43 + c * 67) % 29 - 14;
+
+                        <img src="~/images/bloons/@images[pileName]" alt="" loading="lazy"
+                             style="left: @(slot.X + offsetX)px; bottom: @(slot.Y + offsetY)px; width: @(ScaledWidth(slot.Size * 0.85, scales[pileName]))px; transform: translate(-50%, 50%) rotate(@(slot.Rot + offsetRot)deg);">
+                    }
+                </div>
+            }
+
+            @* Die Symbole der Immunitäten am linken Rand. *@
+            @if (immunitySymbols.Count > 0)
+            {
+                <div class="bloon-immunities">
+                    @foreach (var symbol in immunitySymbols)
+                    {
+                        @* Camo und Lead gibt es schon als Bild, die drei Immunitaeten
+                           werden als SVG gezeichnet. Eine if Kette und kein switch,
+                           weil Razor aus einem switch Block kein Markup ausgibt. *@
+                        <span class="bloon-immunity">
+                            @if (symbol == "Camo")
+                            {
+                                <img src="~/images/assets/camo.png" alt="" loading="lazy">
+                            }
+                            else if (symbol == "Lead")
+                            {
+                                <img src="~/images/bloons/lead_bloon.png" alt="" loading="lazy">
+                            }
+                            else if (symbol == "Explosions")
+                            {
+                                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <polygon points="12.0 1.6 13.7 7.9 19.4 4.6 16.1 10.3 22.4 12.0 16.1 13.7 19.4 19.4 13.7 16.1 12.0 22.4 10.3 16.1 4.6 19.4 7.9 13.7 1.6 12.0 7.9 10.3 4.6 4.6 10.3 7.9" fill="currentColor" />
+                                </svg>
+                            }
+                            else if (symbol == "Cold")
+                            {
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 2v20M3.3 7l17.4 10M20.7 7L3.3 17" />
+                                    <path d="M12 6.2L9.6 4M12 6.2L14.4 4M12 17.8L9.6 20M12 17.8l2.4 2.2" />
+                                    <path d="M6.9 9.1L3.8 9.5M6.9 9.1L6.1 6.1M17.1 14.9l3.1-.4M17.1 14.9l.8 3" />
+                                    <path d="M6.9 14.9l-3.1-.4M6.9 14.9l-.8 3M17.1 9.1l3.1.4M17.1 9.1l.8-3" />
+                                </svg>
+                            }
+                            else if (symbol == "Energy")
+                            {
+                                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M13.8 1.8L5 13.4h5.3L9.4 22.2 19 10.2h-5.6z" fill="currentColor" />
+                                </svg>
+                            }
+                        </span>
+                    }
+                </div>
+            }
+        </div>
+
         <div class="container">
             <div class="stat-panel bloon-stat-panel">
                 <div class="stat-item">

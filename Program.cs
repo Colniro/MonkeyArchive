@@ -23,6 +23,13 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+// Eigene 404 Seite statt der leeren Standardantwort.
+// ReExecute heisst: die Adresse im Browser bleibt stehen und der Statuscode
+// bleibt 404, intern wird aber /Home/PageNotFound gerendert.
+// Muss vor UseRouting stehen, damit der zweite Durchlauf wieder durch das
+// Routing geht.
+app.UseStatusCodePagesWithReExecute("/Home/PageNotFound");
+
 app.UseHttpsRedirection();
 app.UseRouting();
 

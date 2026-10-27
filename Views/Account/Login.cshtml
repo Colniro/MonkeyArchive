@@ -6,6 +6,9 @@
 }
 
 <div class="auth-page">
+    @* Liegt vor der Karte im Markup, damit die Karte obenauf bleibt. *@
+    <partial name="_AuthDecor" />
+
     <div class="auth-card">
         <a asp-controller="Home" asp-action="Index" class="auth-close" aria-label="Continue without an account" title="Continue without an account">
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

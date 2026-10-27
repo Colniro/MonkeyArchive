@@ -91,7 +91,10 @@ CREATE TABLE `Bloon` (
     `Name`          VARCHAR(100) NOT NULL,
     `Description`   TEXT,
     `ImageFileName` VARCHAR(255),
-    `ColorHex`      VARCHAR(50),
+    -- Normalerweise ein Hex Wert wie #DC3E3E. Rainbow hat aber einen ganzen
+    -- CSS Farbverlauf drin, und der ist 77 Zeichen lang. Mit VARCHAR(50)
+    -- wurde er beim Import abgeschnitten und war dann ungültiges CSS.
+    `ColorHex`      VARCHAR(200),
     `ImageScale`    DECIMAL(4,2) NOT NULL DEFAULT 1.0,
     `Rbe`           INT NOT NULL,
     `Speed`         DECIMAL(6,2) NOT NULL,

@@ -519,6 +519,7 @@ nav a.nav-link:hover::after {
 
 /* Deckt body ab, darum braucht es den Verlauf hier nochmal. */
 .towers-page {
+    position: relative;
     min-height: 100vh;
     background-color: var(--Creme);
     background-image: radial-gradient(circle at 12% 8%, rgba(232, 197, 126, 0.22), transparent 40%),
@@ -1139,6 +1140,477 @@ nav a.nav-link:hover::after {
     font-weight: 700;
     padding: 8px 22px;
     border-radius: 999px;
+}
+
+/* Deko Bananen auf der Tower Detailseite (Towers/Details.cshtml).
+   Füllen den leeren Platz unten links, unten in der Mitte und unten rechts.
+   Jeder Haufen gehört zu einer Upgrade Karte, der Preis bestimmt die Menge.
+   Ab 1400x900 blenden sie sich ein und werden mit jeder weiteren Stufe
+   Fensterbreite kräftiger (siehe die opacity Stufen weiter unten).
+   display bleibt immer block, sonst gibt es keinen Übergang: auf display
+   kann nicht animiert werden, auf opacity schon. */
+.banana-decor {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 320px;
+    z-index: 0;
+    /* Schneidet die Haufen am Seitenrand ab. So wirken sie wie in die Ecke
+       gelegt und nicht wie extra dort hin platziert. Gleichzeitig entsteht
+       dadurch keine Scrollbar, obwohl die Bilder über den Rand ragen. */
+    overflow: hidden;
+    /* Liegt hinter dem Inhalt, darf also keine Klicks abfangen. */
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+/* Box für einen Haufen. Die Bananen werden darin mit left/bottom platziert
+   (siehe bananaSlots in Towers/Details.cshtml).
+   Die negativen Werte schieben die Haufen über den Rand hinaus, der Rest
+   wird vom overflow der Deko Ebene weggeschnitten. */
+.banana-pile {
+    position: absolute;
+    bottom: -45px;
+    width: 340px;
+    height: 280px;
+}
+
+.banana-pile-left {
+    left: -90px;
+}
+
+/* Der mittlere Haufen hat keinen Seitenrand zum Rausragen, nur den unteren. */
+.banana-pile-mid {
+    left: 50%;
+    margin-left: -170px;
+}
+
+.banana-pile-right {
+    right: -90px;
+}
+
+.banana {
+    position: absolute;
+    height: auto;
+    filter: drop-shadow(0 4px 7px rgba(0, 0, 0, 0.18));
+}
+
+/* Nur das main direkt nach der Deko Ebene, also nur die Tower Detailseite.
+   Ohne z-index würde der Inhalt hinter den Bananen landen, weil die Deko
+   Ebene positioniert ist und das main nicht. */
+.banana-decor ~ .towers-main {
+    position: relative;
+    z-index: 1;
+}
+
+/* Deko im Hintergrund der Bloon Detailseite (Bloons/Details.cshtml).
+   Füllt auf grossen Bildschirmen die leeren Ränder und Ecken.
+   Gleiche Technik wie .banana-decor auf der Tower Detailseite: immer im DOM,
+   aber über opacity eingeblendet, damit es einen Übergang gibt. */
+
+/* Das main muss bis zum unteren Seitenrand reichen, sonst sitzen die Haufen
+   mitten auf der Seite statt in den Ecken. towers-page ist 100vh hoch, der
+   Inhalt der Bloon Detailseite aber meistens kürzer.
+   Die Klasse steht nur auf dieser einen Seite, die anderen towers-page
+   Seiten bleiben normale Blöcke. */
+.bloon-page {
+    display: flex;
+    flex-direction: column;
+}
+
+.bloon-page .towers-main {
+    position: relative;
+    flex: 1;
+}
+
+.bloon-decor {
+    position: absolute;
+    inset: 0;
+    /* Schneidet die Deko am Rand ab. So wirkt sie angeschnitten statt extra
+       dort hin gestellt, und es entsteht trotzdem keine Scrollbar. */
+    overflow: hidden;
+    z-index: 0;
+    /* Liegt hinter dem Inhalt, darf also keine Klicks abfangen. */
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+/* Nur der Container direkt nach der Deko Ebene, also nur diese Seite.
+   Ohne z-index würde der Inhalt hinter der Deko landen, weil die Deko Ebene
+   positioniert ist und der Container nicht. */
+.bloon-decor ~ .container {
+    position: relative;
+    z-index: 1;
+}
+
+/* Der Bloon selbst, gross und über den rechten Rand hinaus. */
+.bloon-ghost {
+    position: absolute;
+    top: -40px;
+    right: -150px;
+    height: auto;
+    opacity: 0.24;
+}
+
+/* Die zwei Haufen in den unteren Ecken. Die Bilder darin werden mit
+   left/bottom aus pileSlots platziert (siehe Bloons/Details.cshtml). */
+.bloon-pile {
+    position: absolute;
+    bottom: -40px;
+    width: 340px;
+    height: 280px;
+}
+
+.bloon-pile-left {
+    left: -80px;
+}
+
+.bloon-pile-right {
+    right: -80px;
+}
+
+/* translate zentriert das Bild auf dem Punkt aus pileSlots. Das ist nötig weil
+   die Boxen je nach ImageScale unterschiedlich breit sind, der Ballon darin
+   aber immer gleich gross aussieht. */
+.bloon-pile img {
+    position: absolute;
+    height: auto;
+    filter: drop-shadow(0 4px 7px rgba(0, 0, 0, 0.22));
+}
+
+/* Die Symbole der Immunitäten, am linken Rand gestapelt und angeschnitten. */
+/* Oben ausgerichtet und nicht mittig, sonst laufen sie bei drei Symbolen
+   (Camo, Lead und eine Immunität, zum Beispiel beim DDT) in den Haufen
+   in der unteren Ecke hinein. */
+.bloon-immunities {
+    position: absolute;
+    left: -34px;
+    top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    opacity: 0.4;
+}
+
+.bloon-immunity {
+    display: block;
+    width: 118px;
+    height: 118px;
+    color: var(--DarkGreen);
+}
+
+.bloon-immunity img,
+.bloon-immunity svg {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* Deko auf der Startseite (Home/Index.cshtml). Füllt auf grossen Bildschirmen
+   die leeren Seitenränder und die unteren Ecken.
+   Gleiche Technik wie .banana-decor und .bloon-decor: immer im DOM, aber über
+   opacity eingeblendet, damit es einen Übergang gibt.
+   .home-shell hat schon overflow: hidden, darum darf hier alles über den Rand
+   hinausragen ohne dass eine Scrollbar entsteht. */
+.home-decor {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    /* Liegt hinter dem Inhalt, darf also keine Klicks abfangen.
+       Darum reagieren diese Ballons auch nicht auf :hover, anders als die
+       zwei roten weiter unten im Markup. */
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    /* Die vier Kategorie Farben als weiche Lichtflecken in den Ecken, in der
+       gleichen Reihenfolge wie die Karten unten: links blau und grün,
+       rechts lila und orange. Werte wie --CatBlue usw. weiter oben, hier aber
+       als rgba, weil ein Farbverlauf einen Alpha Wert braucht. */
+    background-image:
+        radial-gradient(circle at 0% 0%, rgba(59, 130, 196, 0.20), transparent 34%),
+        radial-gradient(circle at 0% 100%, rgba(54, 172, 82, 0.18), transparent 34%),
+        radial-gradient(circle at 100% 0%, rgba(155, 93, 229, 0.18), transparent 34%),
+        radial-gradient(circle at 100% 100%, rgba(242, 169, 59, 0.24), transparent 34%);
+}
+
+/* Das Schweben selbst kommt von .bloon-float. Position, Breite, Dauer und
+   Verzögerung stehen pro Ballon inline, siehe heroBloons in Home/Index.cshtml. */
+.home-bloon img {
+    height: auto;
+}
+
+/* Die zwei Affen in den unteren Ecken. Sie ragen unten und seitlich über den
+   Rand hinaus, damit es aussieht als würden sie hereinschauen. */
+.home-monkey {
+    position: absolute;
+    height: auto;
+    filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.16));
+}
+
+.home-monkey-left {
+    left: -40px;
+    bottom: -90px;
+    width: 220px;
+}
+
+/* Gespiegelt, damit der Ninja in die Seite hinein schaut und nicht hinaus. */
+.home-monkey-right {
+    right: -40px;
+    bottom: -60px;
+    width: 260px;
+    transform: scaleX(-1);
+}
+
+/* Skeleton Platzhalter für Bilder, die noch laden (siehe wwwroot/js/skeleton.js).
+   Die Seiten kommen fertig gerendert vom Server, nur die Bilder laden nach.
+   Darum sitzt der Platzhalter auf dem Element um das Bild herum, zum Beispiel
+   auf .tower-hexagon in den zwei Übersichts Grids.
+   is-loading wird nur von JavaScript gesetzt und wieder entfernt. */
+@keyframes skeleton-sweep {
+    from {
+        background-position: 200% 0;
+    }
+
+    to {
+        background-position: -200% 0;
+    }
+}
+
+/* Überschreibt den background der Box darunter, zum Beispiel die Kategorie
+   Farbe vom Hexagon. Steht darum weiter unten in der Datei als .tower-hexagon. */
+.is-loading {
+    background-color: var(--Divider);
+    background-image: linear-gradient(100deg,
+        rgba(255, 255, 255, 0) 20%,
+        rgba(255, 255, 255, 0.7) 50%,
+        rgba(255, 255, 255, 0) 80%);
+    background-size: 200% 100%;
+    animation: skeleton-sweep 1.4s ease-in-out infinite;
+}
+
+.is-loading img {
+    opacity: 0;
+}
+
+/* Das Bild blendet sich ein sobald es da ist, statt hart aufzuploppen. */
+.skeleton-img {
+    transition: opacity 0.35s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .is-loading {
+        animation: none;
+    }
+
+    .skeleton-img {
+        transition: none;
+    }
+}
+
+/* Eigene 404 Seite (Views/Home/PageNotFound.cshtml).
+   Flex Spalte mit flex: 1 auf dem main, damit der Block mittig auf der Seite
+   steht. .towers-page ist schon 100vh hoch, der Inhalt hier aber kurz. */
+.notfound-page {
+    display: flex;
+    flex-direction: column;
+}
+
+.notfound-page .towers-main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+
+.notfound-inner {
+    text-align: center;
+}
+
+.notfound-code {
+    font-family: 'Baloo 2', sans-serif;
+    font-size: clamp(5rem, 16vh, 11rem);
+    font-weight: 800;
+    line-height: 1;
+    color: var(--DarkGreen);
+}
+
+.notfound-title {
+    font-family: 'Baloo 2', sans-serif;
+    font-size: clamp(1.8rem, 4vh, 2.6rem);
+    font-weight: 700;
+    color: var(--DarkGreen);
+    margin-top: 6px;
+}
+
+.notfound-text {
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.15rem;
+    color: var(--Gray);
+    max-width: 540px;
+    margin: 18px auto 0;
+}
+
+.notfound-back {
+    display: inline-block;
+    margin-top: 38px;
+}
+
+/* Der versteckte Hinweis auf /elprimo. Die Farbe liegt ganz nah an --Creme,
+   darum sieht man die Zeile nur wenn man genau hinschaut. Beim Hover und beim
+   Markieren wird sie lesbar, user-select: all markiert mit einem Klick alles. */
+.notfound-hint {
+    margin-top: 90px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    letter-spacing: 0.4em;
+    color: #ece7d8;
+    user-select: all;
+    transition: color 0.5s ease;
+}
+
+.notfound-hint:hover {
+    color: var(--MutedGray);
+}
+
+/* Deko an den Seitenrändern. Wird von den zwei Übersichtsseiten und von den
+   vier Account Seiten benutzt (Views/Shared/_AuthDecor.cshtml).
+   Hier ist position: fixed statt absolute wie bei den anderen Deko Ebenen:
+   diese Seiten scrollen und sind je nach Filter unterschiedlich lang, so bleiben
+   die Ränder auf der ganzen Länge gefüllt. Ein fixed Element hängt am Viewport
+   und vergrössert den scrollbaren Bereich nicht, darum entsteht auch keine
+   Scrollbar wenn etwas über den Rand hinausragt. Das overflow: hidden schneidet
+   alles ab was draussen liegt. */
+.side-decor {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    z-index: 0;
+    /* Liegt hinter dem Inhalt, darf also keine Klicks abfangen. */
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+/* Der Inhalt muss über die Deko. Nur das main direkt nach der Deko Ebene,
+   also nur die zwei Übersichtsseiten. */
+.side-decor ~ .towers-main {
+    position: relative;
+    z-index: 1;
+}
+
+/* Ein Ballon im Seitenrand. Das Schweben kommt von .bloon-float, Position,
+   Breite, Dauer und Verzögerung stehen pro Ballon inline. */
+.side-item {
+    opacity: 0.6;
+}
+
+.side-item img {
+    display: block;
+    height: auto;
+}
+
+.side-monkey {
+    position: absolute;
+    height: auto;
+    opacity: 0.5;
+    filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.14));
+}
+
+/* Auf den Account Seiten ist der Hintergrund dunkelgrün statt creme.
+   Darauf dürfen die Bilder kräftiger sein, sonst verschwinden sie. */
+.side-decor-auth .side-item {
+    opacity: 0.8;
+}
+
+.side-decor-auth .side-monkey {
+    opacity: 0.7;
+}
+
+/* Die zwei Affen unten in den Ecken der Account Seiten. Sie ragen unten und
+   seitlich über den Rand hinaus, damit es aussieht als würden sie
+   hereinschauen. */
+.side-monkey-left {
+    left: -50px;
+    bottom: -70px;
+    width: 230px;
+}
+
+/* Gespiegelt, damit der Affe in die Seite hinein schaut und nicht hinaus. */
+.side-monkey-right {
+    right: -50px;
+    bottom: -60px;
+    width: 250px;
+    transform: scaleX(-1);
+}
+
+/* Die Stufen für das Einblenden, gemeinsam für alle drei Deko Ebenen
+   (Startseite, Towers und Bloons Detailseite). CSS kann opacity nicht direkt
+   aus der Fensterbreite rechnen, darum sind es sechs Schritte. Durch die
+   transition läuft jeder Schritt weich ab, beim Vergrössern und Verkleinern. */
+@media (min-width: 1400px) and (min-height: 900px) {
+    .banana-decor,
+    .bloon-decor,
+    .home-decor,
+    .side-decor {
+        opacity: 0.2;
+    }
+}
+
+@media (min-width: 1480px) and (min-height: 900px) {
+    .banana-decor,
+    .bloon-decor,
+    .home-decor,
+    .side-decor {
+        opacity: 0.36;
+    }
+}
+
+@media (min-width: 1560px) and (min-height: 900px) {
+    .banana-decor,
+    .bloon-decor,
+    .home-decor,
+    .side-decor {
+        opacity: 0.52;
+    }
+}
+
+@media (min-width: 1640px) and (min-height: 900px) {
+    .banana-decor,
+    .bloon-decor,
+    .home-decor,
+    .side-decor {
+        opacity: 0.68;
+    }
+}
+
+@media (min-width: 1720px) and (min-height: 900px) {
+    .banana-decor,
+    .bloon-decor,
+    .home-decor,
+    .side-decor {
+        opacity: 0.84;
+    }
+}
+
+@media (min-width: 1800px) and (min-height: 900px) {
+    .banana-decor,
+    .bloon-decor,
+    .home-decor,
+    .side-decor {
+        opacity: 1;
+    }
+}
+
+/* Wer Animationen abgestellt hat bekommt den Wechsel ohne Blende. */
+@media (prefers-reduced-motion: reduce) {
+    .banana-decor,
+    .bloon-decor,
+    .home-decor,
+    .side-decor {
+        transition: none;
+    }
 }
 
 @media (max-width: 900px) {

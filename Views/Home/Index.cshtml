@@ -1,5 +1,24 @@
 ﻿@{
     ViewData["Title"] = "Home";
+
+    // Deko für grosse Bildschirme (Regeln in site.css unter .home-decor).
+    // Ein Schwarm Ballons an beiden Seitenrändern. Side ist "left" oder "right",
+    // Edge der Abstand zu diesem Rand. Negative Werte lassen den Ballon über die
+    // Kante hinausragen, .home-shell hat overflow: hidden und schneidet ihn ab.
+    // Duration und Delay sind pro Ballon anders, sonst wippen alle im Gleichschritt.
+    (string Image, string Side, int Edge, int Top, int Width, string Duration, string Delay)[] heroBloons =
+    [
+        ("blue_bloon.png", "left", -22, 46, 62, "4.4s", "0s"),
+        ("yellow_bloon.png", "left", 96, 128, 40, "5.2s", "1.1s"),
+        ("pink_bloon.png", "left", 38, 252, 52, "4.0s", "2.3s"),
+        ("green_bloon.png", "left", -30, 372, 72, "5.8s", "0.7s"),
+        ("purple_bloon.png", "left", 128, 408, 36, "4.6s", "1.8s"),
+        ("green_bloon.png", "right", 150, 36, 44, "5.0s", "0.4s"),
+        ("purple_bloon.png", "right", -26, 196, 66, "4.2s", "1.5s"),
+        ("yellow_bloon.png", "right", 108, 286, 38, "5.6s", "2.6s"),
+        ("blue_bloon.png", "right", 30, 376, 56, "4.8s", "0.9s"),
+        ("pink_bloon.png", "right", 180, 452, 34, "5.4s", "2.0s")
+    ];
 }
 
 <div class="home-shell">
@@ -8,6 +27,23 @@
 </div>
 
 <section class="hero">
+    @* Hintergrund Deko, erst ab 1400x900 sichtbar. Liegt vor den zwei roten
+       Ballons im Markup, damit die weiterhin obenauf liegen. *@
+    <div class="home-decor" aria-hidden="true">
+        @foreach (var heroBloon in heroBloons)
+        {
+            <div class="bloon-float home-bloon"
+                 style="@(heroBloon.Side): @(heroBloon.Edge)px; top: @(heroBloon.Top)px; animation-duration: @heroBloon.Duration; animation-delay: @heroBloon.Delay;">
+                <img src="~/images/bloons/@heroBloon.Image" class="bloon" alt="" loading="lazy"
+                     style="width: @(heroBloon.Width)px;">
+            </div>
+        }
+
+        @* Zwei Affen, die von unten in die Ecken schauen. *@
+        <img class="home-monkey home-monkey-left" src="~/images/monkeys/wizard_monkey.png" alt="" loading="lazy">
+        <img class="home-monkey home-monkey-right" src="~/images/monkeys/ninja_monkey.png" alt="" loading="lazy">
+    </div>
+
     @* Das Schweben (idle bob) ist auf dem Wrapper, der Hover Effekt (pop und tilt) auf dem Bild selbst.
        Das sind zwei verschiedene Elemente, weil eine CSS Animation transform ständig neu setzt.
        Eine :hover Regel auf dem gleichen Element würde dann nicht funktionieren, weil die Animation gewinnt. *@

@@ -14,9 +14,60 @@
         "Support" => ("#F2A93B", "#7A4E10", "#C68B30"),
         _ => ("#5f5e5a", "#2b2a28", "#5f5e5a")
     };
+
+    // Deko Bananen am unteren Rand (Regeln dazu in site.css unter .banana-decor).
+    // Pro Upgrade Karte ein Haufen: Top Path links, Middle Path in der Mitte, Bottom Path rechts.
+    // Je teurer das Tier 5 Upgrade, desto mehr Bilder liegen im Haufen.
+    int BananaCount(int price) => price switch
+    {
+        < 20000 => 2,
+        < 35000 => 3,
+        < 50000 => 4,
+        < 90000 => 6,
+        _ => 9
+    };
+
+    // Feste Plätze in der 340x280 Box eines Haufens, von unten nach oben aufgebaut.
+    // x und bottom sind Pixel, size die Breite des Bildes, rot die Drehung in Grad.
+    // Kein Grid, die Werte überlappen absichtlich damit es wie ein Haufen aussieht.
+    (int X, int Y, int Size, int Rot)[] bananaSlots =
+    [
+        (20, 0, 120, -10),
+        (110, 0, 140, 8),
+        (210, 4, 118, 16),
+        (60, 78, 126, -16),
+        (150, 88, 130, 12),
+        (0, 66, 100, 22),
+        (218, 84, 106, -20),
+        (105, 160, 118, -6),
+        (190, 152, 96, 18)
+    ];
+
+    var bananaPileClasses = new[] { "banana-pile-left", "banana-pile-mid", "banana-pile-right" };
 }
 
 <div class="towers-page">
+    <div class="banana-decor" aria-hidden="true">
+        @for (var p = 0; p < Model.UpgradePaths.Count && p < bananaPileClasses.Length; p++)
+        {
+            var bananaCount = BananaCount(Model.UpgradePaths[p].Price);
+            <div class="banana-pile @bananaPileClasses[p]">
+                @for (var i = 0; i < bananaCount; i++)
+                {
+                    var slot = bananaSlots[i];
+                    // Kleiner Versatz pro Haufen und Platz, damit die drei Haufen
+                    // nicht genau gleich aussehen wenn zwei Upgrades gleich teuer sind.
+                    var offsetX = (i * 37 + p * 53) % 15 - 7;
+                    var offsetY = (i * 29 + p * 41) % 13 - 6;
+                    var offsetRot = (i * 43 + p * 67) % 29 - 14;
+
+                    <img src="~/images/assets/manybananas.png" alt="" class="banana" loading="lazy"
+                         style="left: @(slot.X + offsetX)px; bottom: @(slot.Y + offsetY)px; width: @(slot.Size)px; transform: rotate(@(slot.Rot + offsetRot)deg);">
+                }
+            </div>
+        }
+    </div>
+
     <partial name="_Navigation" />
 
     <section class="tower-hero" style="--hero-light: @palette.light; --hero-dark: @palette.dark;">

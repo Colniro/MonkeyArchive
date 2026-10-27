@@ -50,6 +50,15 @@ namespace MonkeyArchive.Controllers
             return View();
         }
 
+        // Wird von UseStatusCodePagesWithReExecute in Program.cs aufgerufen.
+        // Heisst absichtlich nicht NotFound: ControllerBase hat schon eine
+        // Methode mit dem Namen, die wuerde sonst verdeckt.
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult PageNotFound()
+        {
+            return View();
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
