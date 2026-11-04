@@ -1,0 +1,86 @@
+@model List<MonkeyArchive.Models.AdminUser>
+@{
+    ViewData["Title"] = "Accounts";
+    ViewData["Subtitle"] = $"{Model.Count} account(s) in the User table";
+    var search = ViewData["Search"] as string ?? "";
+}
+
+<div class="admin-toolbar">
+    @* Suche über den Query String, gleiches Muster wie auf /Towers. *@
+    <form class="admin-search" method="get" asp-controller="Admin" asp-action="Users">
+        <input type="search" name="search" value="@search" placeholder="Search username..." autocomplete="off">
+        <button type="submit" class="admin-btn admin-btn-ghost">Search</button>
+        @if (!string.IsNullOrEmpty(search))
+        {
+            <a class="admin-btn admin-btn-ghost" asp-action="Users">Clear</a>
+        }
+    </form>
+
+    <a class="admin-btn admin-btn-primary" asp-action="CreateUser">+ New account</a>
+</div>
+
+<section class="admin-panel">
+    @if (Model.Count == 0)
+    {
+        <p class="admin-empty">No accounts match that search.</p>
+    }
+    else
+    {
+        <p class="admin-panel-hint">
+            Passwords and security answers are only stored as a hash, so they can't be shown here.
+            Use Edit to set a new one.
+        </p>
+
+        <div class="admin-table-wrap">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th class="admin-num">ID</th>
+                        <th>Username</th>
+                        <th>Security question</th>
+                        <th class="admin-num">Favorites</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model)
+                    {
+                        <tr class="@(user.IsAdmin ? "admin-row-highlight" : "")">
+                            <td class="admin-num admin-mono">@user.Id</td>
+                            <td>
+                                <strong>@user.Username</strong>
+                                @if (user.IsAdmin)
+                                {
+                                    <span class="admin-badge">admin</span>
+                                }
+                            </td>
+                            <td class="admin-cell-wide">@user.SecurityQuestion</td>
+                            <td class="admin-num">@user.FavoriteCount</td>
+                            <td class="admin-actions">
+                                <a class="admin-btn admin-btn-edit" asp-action="EditUser" asp-route-id="@user.Id">Edit</a>
+
+                                @if (user.FavoriteCount > 0)
+                                {
+                                    <form method="post" asp-action="ClearFavorites" asp-route-id="@user.Id"
+                                          onsubmit="return confirm('Remove all @user.FavoriteCount favorite(s) from @user.Username?');">
+                                        <button type="submit" class="admin-btn admin-btn-ghost">Clear favs</button>
+                                    </form>
+                                }
+
+                                @* Der Admin Account hat keinen Löschen Knopf. Der Controller
+                                   blockiert es zusätzlich, falls jemand den POST direkt schickt. *@
+                                @if (!user.IsAdmin)
+                                {
+                                    <form method="post" asp-action="DeleteUser" asp-route-id="@user.Id"
+                                          onsubmit="return confirm('Delete the account @user.Username and all of its favorites? This cannot be undone.');">
+                                        <button type="submit" class="admin-btn admin-btn-danger">Delete</button>
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</section>

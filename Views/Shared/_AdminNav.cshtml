@@ -1,0 +1,16 @@
+@{
+    // Die Reiterleiste im Admin Bereich. Welcher Reiter aktiv ist, kommt aus der
+    // aktuellen Action. Die Bearbeiten Seiten gehören zum jeweiligen Reiter
+    // ihrer Liste, darum stehen sie hier mit in der Prüfung.
+    var action = ViewContext.RouteData.Values["action"] as string ?? "";
+
+    bool On(params string[] actions) => actions.Contains(action, StringComparer.OrdinalIgnoreCase);
+}
+
+<div class="admin-tabs">
+    <a class="admin-tab @(On("Index") ? "active" : "")" asp-controller="Admin" asp-action="Index">Dashboard</a>
+    <a class="admin-tab @(On("Users", "EditUser", "CreateUser") ? "active" : "")" asp-controller="Admin" asp-action="Users">Accounts</a>
+    <a class="admin-tab @(On("Towers", "EditTower", "CreateTower") ? "active" : "")" asp-controller="Admin" asp-action="Towers">Towers</a>
+    <a class="admin-tab @(On("Bloons", "EditBloon") ? "active" : "")" asp-controller="Admin" asp-action="Bloons">Bloons</a>
+    <a class="admin-tab @(On("Query") ? "active" : "")" asp-controller="Admin" asp-action="Query">SQL</a>
+</div>

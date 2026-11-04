@@ -1,41 +1,178 @@
+@using System.Globalization
 @model List<MonkeyArchive.Models.Tower>
 @{
     ViewData["Title"] = "Favorites";
+
+    var username = ViewData["Username"] as string ?? "";
+    var towerTotal = ViewData["TowerTotal"] as int? ?? 0;
+
+    // Die vier Kategorien in der gleichen Reihenfolge und mit den gleichen Farben
+    // wie die Filter Pills auf /Towers. Es stehen immer alle vier da, auch die
+    // ohne Favoriten. So sieht man auf einen Blick, wo noch nichts markiert ist.
+    (string Name, string Color)[] categories =
+    [
+        ("Primary", "var(--CatBlue)"),
+        ("Military", "var(--CatGreen)"),
+        ("Magic", "var(--CatPurple)"),
+        ("Support", "var(--CatOrange)")
+    ];
+
+    string ColorOf(string category) => category switch
+    {
+        "Primary" => "var(--CatBlue)",
+        "Military" => "var(--CatGreen)",
+        "Magic" => "var(--CatPurple)",
+        "Support" => "var(--CatOrange)",
+        _ => "var(--Gray)"
+    };
+
+    var totalCost = Model.Sum(t => t.Cost);
+    var usedCategories = Model.Select(t => t.Category).Distinct().Count();
+
+    // Deko an den Seitenrändern für grosse Bildschirme, gleiche Slots und gleiche
+    // Regeln wie auf der Towers Übersicht (site.css unter .side-decor).
+    // Side ist "left" oder "right", Edge der Abstand zu diesem Rand. Negative
+    // Werte lassen den Affen über die Kante hinausragen. Top ist Prozent der
+    // Fensterhöhe, nicht Pixel: die Ebene ist position: fixed.
+    (string Side, int Edge, int Top, int Width)[] decorSlots =
+    [
+        ("left", -70, 6, 240),
+        ("left", 10, 36, 175),
+        ("left", -80, 66, 255),
+        ("right", -60, 12, 225),
+        ("right", 20, 44, 170),
+        ("right", -70, 72, 245)
+    ];
 }
 
 <div class="towers-page">
+    @* Die Deko sind die eigenen Favoriten, gleichmässig über die Slots verteilt.
+       Wer noch keine hat, bekommt stattdessen zwei Affen in die unteren Ecken,
+       damit die leere Seite nicht ganz nackt ist. *@
+    <div class="side-decor" aria-hidden="true">
+        @if (Model.Count > 0)
+        {
+            @for (var i = 0; i < decorSlots.Length; i++)
+            {
+                var slot = decorSlots[i];
+                var tower = Model[i * Model.Count / decorSlots.Length % Model.Count];
+
+                <img class="side-monkey" src="~/images/monkeys/@tower.Image" alt="" loading="lazy"
+                     style="@(slot.Side): @(slot.Edge)px; top: @(slot.Top)%; width: @(slot.Width)px;">
+            }
+        }
+        else
+        {
+            <img class="side-monkey side-monkey-left" src="~/images/monkeys/dart_monkey.png" alt="" loading="lazy">
+            <img class="side-monkey side-monkey-right" src="~/images/monkeys/ninja_monkey.png" alt="" loading="lazy">
+        }
+    </div>
+
     <partial name="_Navigation" />
 
     <main class="towers-main">
         <div class="container">
-            <h1 class="page-title">Your Favorites</h1>
+            <div class="favorites-head">
+                <div>
+                    <span class="favorites-eyebrow">Your collection</span>
+                    <h1 class="page-title favorites-title">Your Favorites</h1>
+                    <p class="favorites-sub">
+                        @Model.Count of @towerTotal monkeys starred@(string.IsNullOrEmpty(username) ? "" : $" by {username}")
+                    </p>
+                </div>
+
+                @* Gleiche Pille wie der Zurück Link auf den Detailseiten, nur
+                   zeigt der Pfeil nach vorne statt zurück. *@
+                <a class="detail-back detail-back-fwd" asp-controller="Towers" asp-action="Index">
+                    Browse all Towers
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <polyline points="10 5 17 12 10 19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </a>
+            </div>
 
             @if (Model.Count == 0)
             {
-                <p class="no-results">You haven't favorited any monkeys yet.</p>
+                <div class="favorites-empty">
+                    <img src="~/images/monkeys/banana_farm_monkey.png" alt="" loading="lazy">
+                    <h2>Nothing in here yet</h2>
+                    <p>
+                        Open a monkey and hit <strong>Add to Favorites</strong> in the banner.
+                        Everything you star shows up on this page.
+                    </p>
+                    <a class="btn btn-primary favorites-empty-btn" asp-controller="Towers" asp-action="Index">Pick your first monkey</a>
+                </div>
             }
             else
             {
+                @* Die drei Zahlen zur eigenen Liste. Gleiches Panel wie auf den
+                   Detailseiten, nur mit drei Spalten statt vier. *@
+                <div class="stat-panel favorites-stat-panel">
+                    <div class="stat-item">
+                        <span class="stat-label">Monkeys</span>
+                        <span class="stat-value">@Model.Count</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Total cost</span>
+                        <span class="stat-value">$@totalCost.ToString("N0", CultureInfo.InvariantCulture)</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Categories</span>
+                        <span class="stat-value">@usedCategories / @categories.Length</span>
+                    </div>
+                </div>
+
+                @* Alle vier Kategorien mit der Anzahl. Die ohne Favoriten stehen
+                   blass da, damit man die Lücken in der Sammlung sieht. *@
+                <div class="favorites-legend">
+                    @foreach (var category in categories)
+                    {
+                        var count = Model.Count(t => t.Category == category.Name);
+
+                        <span class="favorites-chip @(count == 0 ? "muted" : "")" style="--cat-color: @category.Color">
+                            <span class="favorites-chip-dot"></span>
+                            @category.Name
+                            <strong>@count</strong>
+                        </span>
+                    }
+                </div>
+
+                <p class="favorites-hint">Click the heart on a card to take that monkey off the list.</p>
+
                 <div class="towers-grid">
                     @foreach (var tower in Model)
                     {
-                        string colorVar = tower.Category switch
-                        {
-                            "Primary" => "var(--CatBlue)",
-                            "Military" => "var(--CatGreen)",
-                            "Magic" => "var(--CatPurple)",
-                            "Support" => "var(--CatOrange)",
-                            _ => "var(--Gray)"
-                        };
-
-                        <div class="tower-item" style="--cat-color: @colorVar">
+                        @* Gleiche Karte wie im Grid auf /Towers, siehe dort den
+                           Kommentar warum .tower-bar ein Sibling bleiben muss. *@
+                        <div class="tower-item" style="--cat-color: @ColorOf(tower.Category)">
                             <div class="tower-bar"></div>
                             <a class="tower-card" asp-controller="Towers" asp-action="Details" asp-route-id="@tower.Slug">
                                 <div class="tower-hexagon" data-skeleton>
                                     <img src="~/images/monkeys/@tower.Image" alt="@tower.Name">
                                 </div>
                                 <p>@tower.Name</p>
+                                <span class="favorites-card-cost">$@tower.Cost.ToString("N0", CultureInfo.InvariantCulture)</span>
                             </a>
+
+                            @* Das Herz in der Ecke nimmt den Affen wieder von der Liste.
+                               Es ist der gleiche Toggle wie der Knopf auf der Detailseite,
+                               nur mit dieser Seite als Rückweg.
+                               Das Formular muss ein Sibling der Karte bleiben: die Karte ist
+                               selbst ein Link, und ein Knopf darf nicht in einem Link stehen. *@
+                            <form class="favorite-remove-form" method="post" asp-controller="Towers" asp-action="ToggleFavorite" asp-route-id="@tower.Slug">
+                                <input type="hidden" name="returnUrl" value="@(Context.Request.Path + Context.Request.QueryString)">
+                                <button type="submit" class="favorite-remove" title="Remove @tower.Name from favorites" aria-label="Remove @tower.Name from favorites">
+                                    @* Zwei Symbole übereinander: normal das gefüllte Herz, beim
+                                       Hover das durchgestrichene. So sieht man, was der Klick macht. *@
+                                    <svg class="favorite-remove-on" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                        <path d="M12 20.5s-7.5-4.6-10-9.3C0.3 7.7 2 4 5.6 4c2 0 3.6 1.1 4.4 2.6C10.8 5.1 12.4 4 14.4 4 18 4 19.7 7.7 22 11.2c-2.5 4.7-10 9.3-10 9.3z" fill="currentColor" />
+                                    </svg>
+                                    <svg class="favorite-remove-off" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                        <path d="M12 20.5s-7.5-4.6-10-9.3C0.3 7.7 2 4 5.6 4c2 0 3.6 1.1 4.4 2.6C10.8 5.1 12.4 4 14.4 4 18 4 19.7 7.7 22 11.2c-2.5 4.7-10 9.3-10 9.3z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+                                        <line x1="4.6" y1="4.6" x2="19.4" y2="19.4" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                                    </svg>
+                                </button>
+                            </form>
                         </div>
                     }
                 </div>

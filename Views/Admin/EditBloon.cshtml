@@ -1,0 +1,122 @@
+@model MonkeyArchive.Models.AdminBloonForm
+@{
+    ViewData["Title"] = $"Edit {Model.Name}";
+    ViewData["Subtitle"] = $"Bloon row #{Model.Id}";
+}
+
+<section class="admin-panel admin-panel-form">
+    <form method="post" asp-controller="Admin" asp-action="EditBloon">
+        <input type="hidden" name="Id" value="@Model.Id">
+
+        <div class="admin-form-side">
+            <div class="admin-preview" style="background: @Model.ColorHex">
+                <img src="~/images/bloons/@Model.ImageFileName" alt="@Model.Name"
+                     style="transform: scale(@Model.ImageScale.ToString(System.Globalization.CultureInfo.InvariantCulture))">
+            </div>
+
+            <div class="admin-form-grid">
+                <div class="admin-field">
+                    <label for="Name">Name</label>
+                    <input type="text" id="Name" name="Name" value="@Model.Name" required>
+                </div>
+
+                <div class="admin-field">
+                    <label for="Slug">Slug</label>
+                    <input type="text" id="Slug" name="Slug" value="@Model.Slug" required>
+                    <span class="admin-field-hint">Used in the URL: /Bloons/Details/@Model.Slug</span>
+                </div>
+
+                <div class="admin-field">
+                    <label for="CategoryId">Category</label>
+                    <select id="CategoryId" name="CategoryId">
+                        @foreach (var category in Model.Categories)
+                        {
+                            <option value="@category.Id" selected="@(category.Id == Model.CategoryId)">@category.Name</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="admin-field">
+                    <label for="ImageFileName">Image file name</label>
+                    <input type="text" id="ImageFileName" name="ImageFileName" value="@Model.ImageFileName">
+                    <span class="admin-field-hint">File inside wwwroot/images/bloons/</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="admin-field">
+            <label for="Description">Description</label>
+            <textarea id="Description" name="Description" rows="4">@Model.Description</textarea>
+        </div>
+
+        <div class="admin-form-grid admin-form-grid-4">
+            <div class="admin-field">
+                <label for="Layer">Layer</label>
+                <input type="number" id="Layer" name="Layer" value="@Model.Layer" required>
+                <span class="admin-field-hint">Red is 1, BAD is 13.</span>
+            </div>
+
+            <div class="admin-field">
+                <label for="Rbe">RBE</label>
+                <input type="number" id="Rbe" name="Rbe" value="@Model.Rbe" required>
+            </div>
+
+            <div class="admin-field">
+                <label for="Speed">Speed</label>
+                <input type="number" step="0.01" id="Speed" name="Speed" value="@Model.Speed" required>
+            </div>
+
+            <div class="admin-field">
+                <label for="ImageScale">Image scale</label>
+                <input type="number" step="0.01" id="ImageScale" name="ImageScale" value="@Model.ImageScale" required>
+                <span class="admin-field-hint">Evens out the transparent border around the image.</span>
+            </div>
+        </div>
+
+        <div class="admin-form-grid">
+            <div class="admin-field">
+                <label for="ColorHex">Color</label>
+                <input type="text" id="ColorHex" name="ColorHex" value="@Model.ColorHex">
+                <span class="admin-field-hint">Hex like #DC3E3E, or a full CSS gradient (that's what Rainbow uses).</span>
+            </div>
+
+            <div class="admin-field">
+                <label for="GameVersion">Game version</label>
+                <input type="text" id="GameVersion" name="GameVersion" value="@Model.GameVersion">
+            </div>
+        </div>
+
+        <div class="admin-field">
+            <label for="PopsIntoNote">Pops into note</label>
+            <input type="text" id="PopsIntoNote" name="PopsIntoNote" value="@Model.PopsIntoNote">
+            <span class="admin-field-hint">
+                Only for bloons that pop into something random (Ceramic, DDT). Leave empty to show
+                the normal row of child bloons instead.
+            </span>
+        </div>
+
+        @* Nach jeder Checkbox kommt ein hidden Feld mit false. Eine Checkbox, die
+           nicht angehakt ist, schickt gar nichts mit, der Wert käme sonst nie auf
+           false zurück. Die Reihenfolge ist wichtig: das Model Binding nimmt den
+           ersten Wert, angehakt gewinnt also das "true" der Checkbox. *@
+        <div class="admin-checks">
+            <label class="admin-check">
+                <input type="checkbox" name="IsCamo" value="true" @(Model.IsCamo ? "checked" : "")>
+                <input type="hidden" name="IsCamo" value="false">
+                <span>Camo</span>
+            </label>
+
+            <label class="admin-check">
+                <input type="checkbox" name="IsLead" value="true" @(Model.IsLead ? "checked" : "")>
+                <input type="hidden" name="IsLead" value="false">
+                <span>Lead</span>
+            </label>
+        </div>
+
+        <div class="admin-form-actions">
+            <button type="submit" class="admin-btn admin-btn-primary">Save changes</button>
+            <a class="admin-btn admin-btn-ghost" asp-action="Bloons">Cancel</a>
+            <a class="admin-btn admin-btn-ghost" asp-controller="Bloons" asp-action="Details" asp-route-id="@Model.Slug">Open public page</a>
+        </div>
+    </form>
+</section>

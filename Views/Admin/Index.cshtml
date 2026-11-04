@@ -1,0 +1,128 @@
+@model MonkeyArchive.Models.AdminDashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+    ViewData["Subtitle"] = $"Connected to {Model.DatabaseName} on MySQL {Model.ServerVersion}";
+}
+
+@* Die vier wichtigsten Zahlen auf einen Blick. Die Farben sind die gleichen
+   vier Kategoriefarben wie im Rest der Seite, damit es dazu passt. *@
+<div class="admin-stats">
+    <a class="admin-stat" style="--tile-color: var(--CatBlue)" asp-action="Users">
+        <span class="admin-stat-value">@Model.UserCount</span>
+        <span class="admin-stat-label">Accounts</span>
+    </a>
+    <a class="admin-stat" style="--tile-color: var(--CatGreen)" asp-action="Towers">
+        <span class="admin-stat-value">@Model.TowerCount</span>
+        <span class="admin-stat-label">Towers</span>
+    </a>
+    <a class="admin-stat" style="--tile-color: var(--CatPurple)" asp-action="Bloons">
+        <span class="admin-stat-value">@Model.BloonCount</span>
+        <span class="admin-stat-label">Bloons</span>
+    </a>
+    <div class="admin-stat admin-stat-static" style="--tile-color: var(--CatOrange)">
+        <span class="admin-stat-value">@Model.FavoriteCount</span>
+        <span class="admin-stat-label">Favorites set</span>
+    </div>
+</div>
+
+<div class="admin-columns">
+    <section class="admin-panel">
+        <h2 class="admin-panel-title">Most favorited towers</h2>
+
+        @if (Model.TopFavorites.Count == 0)
+        {
+            <p class="admin-empty">Nobody has favorited a tower yet.</p>
+        }
+        else
+        {
+            <ul class="admin-top-list">
+                @foreach (var fav in Model.TopFavorites)
+                {
+                    string colorVar = fav.Category switch
+                    {
+                        "Primary" => "var(--CatBlue)",
+                        "Military" => "var(--CatGreen)",
+                        "Magic" => "var(--CatPurple)",
+                        "Support" => "var(--CatOrange)",
+                        _ => "var(--Gray)"
+                    };
+
+                    @* Balkenbreite relativ zum ersten Platz. Der hat immer 100%,
+                       darum ist der Vergleich auch bei kleinen Zahlen lesbar. *@
+                    var share = Model.TopFavorites[0].Count == 0
+                        ? 0
+                        : fav.Count * 100 / Model.TopFavorites[0].Count;
+
+                    <li class="admin-top-item" style="--cat-color: @colorVar">
+                        <img src="~/images/monkeys/@fav.Image" alt="@fav.Name">
+                        <div class="admin-top-body">
+                            <a asp-controller="Towers" asp-action="Details" asp-route-id="@fav.Slug">@fav.Name</a>
+                            <div class="admin-top-bar"><span style="width: @share%"></span></div>
+                        </div>
+                        <span class="admin-top-count">@fav.Count</span>
+                    </li>
+                }
+            </ul>
+        }
+    </section>
+
+    <section class="admin-panel">
+        <h2 class="admin-panel-title">Newest accounts</h2>
+
+        @if (Model.NewestUsers.Count == 0)
+        {
+            <p class="admin-empty">No accounts in the database.</p>
+        }
+        else
+        {
+            <ul class="admin-user-list">
+                @foreach (var user in Model.NewestUsers)
+                {
+                    <li>
+                        <div>
+                            <a asp-action="EditUser" asp-route-id="@user.Id">@user.Username</a>
+                            @if (user.IsAdmin)
+                            {
+                                <span class="admin-badge">admin</span>
+                            }
+                            <span class="admin-user-question">@user.SecurityQuestion</span>
+                        </div>
+                        <span class="admin-id">#@user.Id</span>
+                    </li>
+                }
+            </ul>
+
+            <a class="admin-btn admin-btn-ghost admin-panel-link" asp-action="Users">See all accounts</a>
+        }
+    </section>
+</div>
+
+<section class="admin-panel">
+    <h2 class="admin-panel-title">Tables</h2>
+    <p class="admin-panel-hint">Exact row counts, counted live with COUNT(*) on every page load.</p>
+
+    <div class="admin-table-wrap">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Table</th>
+                    <th class="admin-num">Rows</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var table in Model.Tables)
+                {
+                    <tr>
+                        <td class="admin-mono">@table.Name</td>
+                        <td class="admin-num">@table.Rows</td>
+                        <td class="admin-actions">
+                            @* Schickt die Tabelle direkt als fertige Abfrage in die SQL Konsole. *@
+                            <a class="admin-btn admin-btn-ghost" asp-action="Query" asp-route-sql="SELECT * FROM `@table.Name`">Browse</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</section>

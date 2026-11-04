@@ -1,0 +1,91 @@
+@model List<MonkeyArchive.Models.AdminTowerForm>
+@{
+    ViewData["Title"] = "Towers";
+    ViewData["Subtitle"] = $"{Model.Count} row(s) in the Tower table";
+    var search = ViewData["Search"] as string ?? "";
+}
+
+<div class="admin-toolbar">
+    <form class="admin-search" method="get" asp-controller="Admin" asp-action="Towers">
+        <input type="search" name="search" value="@search" placeholder="Search name or slug..." autocomplete="off">
+        <button type="submit" class="admin-btn admin-btn-ghost">Search</button>
+        @if (!string.IsNullOrEmpty(search))
+        {
+            <a class="admin-btn admin-btn-ghost" asp-action="Towers">Clear</a>
+        }
+    </form>
+
+    <a class="admin-btn admin-btn-primary" asp-action="CreateTower">+ New tower</a>
+</div>
+
+<section class="admin-panel">
+    @if (Model.Count == 0)
+    {
+        <p class="admin-empty">No towers match that search.</p>
+    }
+    else
+    {
+        <div class="admin-table-wrap">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th class="admin-num">ID</th>
+                        <th></th>
+                        <th>Name</th>
+                        <th>Slug</th>
+                        <th>Category</th>
+                        <th class="admin-num">Cost</th>
+                        <th class="admin-num">Damage</th>
+                        <th class="admin-num">Pierce</th>
+                        <th class="admin-num">Range</th>
+                        <th>Version</th>
+                        <th class="admin-num">Paths</th>
+                        <th class="admin-num">Favs</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var tower in Model)
+                    {
+                        var categoryName = tower.Categories.FirstOrDefault()?.Name ?? "";
+                        string colorVar = categoryName switch
+                        {
+                            "Primary" => "var(--CatBlue)",
+                            "Military" => "var(--CatGreen)",
+                            "Magic" => "var(--CatPurple)",
+                            "Support" => "var(--CatOrange)",
+                            _ => "var(--Gray)"
+                        };
+
+                        <tr>
+                            <td class="admin-num admin-mono">@tower.Id</td>
+                            <td><img class="admin-thumb" src="~/images/monkeys/@tower.ImageFileName" alt="@tower.Name"></td>
+                            <td><strong>@tower.Name</strong></td>
+                            <td class="admin-mono">@tower.Slug</td>
+                            <td><span class="admin-chip" style="--chip-color: @colorVar">@categoryName</span></td>
+                            <td class="admin-num">@tower.Cost</td>
+                            <td class="admin-num">@tower.Damage</td>
+                            <td class="admin-num">@tower.Pierce</td>
+                            @* Leere Range Spalte heisst unendliche Reichweite. *@
+                            <td class="admin-num">@(tower.Range?.ToString() ?? "∞")</td>
+                            <td class="admin-mono">@(tower.GameVersion ?? "-")</td>
+                            <td class="admin-num">@tower.UpgradePathCount</td>
+                            <td class="admin-num">@tower.FavoriteCount</td>
+                            <td class="admin-actions">
+                                <a class="admin-btn admin-btn-edit" asp-action="EditTower" asp-route-id="@tower.Id">Edit</a>
+                                <a class="admin-btn admin-btn-ghost" asp-controller="Towers" asp-action="Details" asp-route-id="@tower.Slug">View</a>
+
+                                @* Die Rückfrage nennt die zwei Zahlen aus den Spalten davor, damit
+                                   man vorher sieht, was am Tower hängt und mit gelöscht wird. *@
+                                <form method="post" asp-action="DeleteTower" asp-route-id="@tower.Id"
+                                      onsubmit="return confirm('Delete @tower.Name, its @tower.UpgradePathCount upgrade path(s) and @tower.FavoriteCount favorite(s)? This cannot be undone.');">
+                                    <button type="submit" class="admin-btn admin-btn-danger">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</section>

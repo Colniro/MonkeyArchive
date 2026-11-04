@@ -1,6 +1,11 @@
-@{
+﻿@{
     var loggedInUsername = Context.Session.GetString("Username");
     var isLoggedIn = !string.IsNullOrEmpty(loggedInUsername);
+
+    // Der Admin Link steht nur fuer den Admin im Menue. Die Pruefung selbst
+    // liegt im AdminController, hier wird dieselbe Methode benutzt, damit es
+    // nur eine Stelle mit der Regel gibt.
+    var isAdmin = MonkeyArchive.Controllers.AdminController.IsAdmin(Context);
 }
 
 <header>
@@ -13,6 +18,17 @@
         <a asp-controller="Home" asp-action="Index">Monkey Archive</a>
     </div>
 
+    @* Handy Version: Die Checkbox ist der ganze Schalter fuer das Menue.
+       Sie ist unsichtbar, das Label mit den drei Balken gehoert dazu und
+       schaltet sie um. Das CSS blendet damit das <nav> als Vollbild Menue ein.
+       So braucht es kein JavaScript. Auf dem Desktop ist beides ausgeblendet. *@
+    <input class="nav-toggle" type="checkbox" id="nav-toggle" aria-label="Menue">
+    <label class="nav-burger" for="nav-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+    </label>
+
     <nav>
         <div class="nav-links">
             <a class="nav-link" asp-controller="Towers" asp-action="Index">Towers</a>
@@ -20,6 +36,10 @@
             @if (isLoggedIn)
             {
                 <a class="nav-link" asp-controller="Account" asp-action="Favorites">Favorites</a>
+            }
+            @if (isAdmin)
+            {
+                <a class="nav-link nav-link-admin" asp-controller="Admin" asp-action="Index">Admin</a>
             }
         </div>
 

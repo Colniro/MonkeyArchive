@@ -104,6 +104,16 @@
 
     <main class="towers-main">
         <div class="container">
+            @* Raus aus der Detailseite zurück auf /Towers. Die zwei Pfeile im
+               Banner gehen nur zum nächsten Affen, hier fehlte der Weg zurück
+               zur Liste. Gleiche Pille wie auf der Bloon Detailseite. *@
+            <a class="detail-back" asp-action="Index">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <polyline points="14 5 7 12 14 19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                Back to all Towers
+            </a>
+
             <div class="stat-panel">
                 <div class="stat-item">
                     <span class="stat-label">Cost</span>

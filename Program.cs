@@ -5,7 +5,7 @@ builder.Services.AddControllersWithViews();
 
 // Für den Login Session Cookie.
 // Der AccountController speichert dort den Username vom eingeloggten Nutzer.
-// Es gibt kein Login System mit Datenbank dahinter.
+// Die Accounts selbst liegen in der User Tabelle in der Datenbank.
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {

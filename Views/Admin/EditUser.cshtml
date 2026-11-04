@@ -1,0 +1,59 @@
+@model MonkeyArchive.Models.AdminUser
+@{
+    ViewData["Title"] = $"Edit {Model.Username}";
+    ViewData["Subtitle"] = $"User row #{Model.Id} - {Model.FavoriteCount} favorite(s)";
+    var questions = ViewData["SecurityQuestions"] as string[] ?? [];
+}
+
+<section class="admin-panel admin-panel-form">
+    <form method="post" asp-controller="Admin" asp-action="EditUser" asp-route-id="@Model.Id">
+        <div class="admin-form-grid">
+            <div class="admin-field">
+                <label for="username">Username</label>
+                @* Der Admin Account darf nicht umbenannt werden, sonst kommt
+                   niemand mehr auf diese Seite. Darum readonly. *@
+                <input type="text" id="username" name="username" value="@Model.Username"
+                       @(Model.IsAdmin ? "readonly" : "") required>
+                @if (Model.IsAdmin)
+                {
+                    <span class="admin-field-hint">The admin username is fixed - it's what unlocks this area.</span>
+                }
+            </div>
+
+            <div class="admin-field">
+                <label for="password">New password</label>
+                @* Das alte Passwort steht nur als Hash in der DB und kann nicht
+                   angezeigt werden. Leer lassen heisst: Passwort bleibt gleich. *@
+                <input type="text" id="password" name="password" autocomplete="off">
+                <span class="admin-field-hint">Leave empty to keep the current password.</span>
+            </div>
+
+            <div class="admin-field">
+                <label for="securityQuestion">Security question</label>
+                <select id="securityQuestion" name="securityQuestion" required>
+                    @foreach (var question in questions)
+                    {
+                        <option value="@question" selected="@(question == Model.SecurityQuestion)">@question</option>
+                    }
+                    @* Falls in der DB eine Frage steht, die nicht mehr in der
+                       Liste ist, soll sie nicht still verschwinden. *@
+                    @if (!questions.Contains(Model.SecurityQuestion))
+                    {
+                        <option value="@Model.SecurityQuestion" selected>@Model.SecurityQuestion</option>
+                    }
+                </select>
+            </div>
+
+            <div class="admin-field">
+                <label for="answer">New answer</label>
+                <input type="text" id="answer" name="answer" autocomplete="off">
+                <span class="admin-field-hint">Leave empty to keep the current answer. Needed if you pick a new question.</span>
+            </div>
+        </div>
+
+        <div class="admin-form-actions">
+            <button type="submit" class="admin-btn admin-btn-primary">Save changes</button>
+            <a class="admin-btn admin-btn-ghost" asp-action="Users">Cancel</a>
+        </div>
+    </form>
+</section>

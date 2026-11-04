@@ -14,10 +14,17 @@
     --CatPurple: #9B5DE5;
     --CatOrange: #F2A93B;
     --DetailDarkBlue: #042C53;
+    /* Nur im Admin Bereich benutzt, fuer Loeschen Knoepfe und Fehlermeldungen. */
+    --Danger: #B33A2B;
+    --DangerSoft: #FBE9E6;
 }
 
+/* clip statt hidden: so wird kein eigener Scroll Container erzeugt und der
+   sticky Header funktioniert weiter. Verhindert auf dem Handy, dass ein zu
+   breites Element die ganze Seite seitlich scrollbar macht. */
 html {
   font-size: 14px;
+  overflow-x: clip;
 }
 
 * {
@@ -49,7 +56,7 @@ body {
     flex: 0 0 auto;
 }
 
-/* Kommt auf allen Seiten über _Header.cshtml. Sticky statt fixed.
+/* Kommt auf allen Seiten über _Navigation.cshtml. Sticky statt fixed.
    So bleibt der normale Layout Fluss erhalten und der Inhalt darunter braucht kein extra padding oben.
    Trotzdem bleibt der Header beim Scrollen sichtbar. */
 header {
@@ -956,6 +963,44 @@ nav a.nav-link:hover::after {
     margin-top: 12px;
 }
 
+/* Zurück Link auf einer Detailseite. Steht oben im Inhalt, unter dem
+   farbigen Banner. Eine Pille wie die Filter Pills auf den Übersichtsseiten,
+   damit sie zum Rest passt. Der Pfeil rutscht beim Hover ein Stück nach
+   links, in die Richtung in die der Link führt. */
+.detail-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--DarkGreen);
+    text-decoration: none;
+    background-color: #fff;
+    border: 2px solid var(--Divider);
+    border-radius: 999px;
+    padding: 9px 22px 9px 16px;
+    transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.detail-back svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+}
+
+.detail-back:hover {
+    color: var(--DarkGreen);
+    border-color: var(--DarkGreen);
+    background-color: var(--LightGreen);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.detail-back:hover svg {
+    transform: translateX(-4px);
+}
+
 /* Bloon Detailseite (/Bloons/Details/{slug}) */
 
 /* Ein Kreis mit fester Grösse, der das Bild abschneidet. Bewusst ein eigenes Element, nicht das <img> selbst.
@@ -1823,4 +1868,1211 @@ nav a.nav-link:hover::after {
     color: var(--BtnGreen);
     font-weight: 700;
     text-decoration: underline;
+}
+
+/* Favoriten Seite (/Account/Favorites)
+   Benutzt die gleichen Karten wie das Grid auf /Towers. Dazu kommen hier eine
+   Kopfzeile mit Zahlen zur eigenen Liste, die vier Kategorien als Pillen und
+   ein eigener Zustand für "noch keine Favoriten". */
+
+.favorites-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 4px;
+}
+
+/* Kleine Zeile ueber dem Titel, gleiche Idee wie .admin-eyebrow. */
+.favorites-eyebrow {
+    display: block;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--MutedGray);
+    margin-bottom: 6px;
+}
+
+/* Der Abstand unter dem Titel kommt hier von der Unterzeile. */
+.favorites-title {
+    margin-bottom: 6px;
+}
+
+.favorites-sub {
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.05rem;
+    color: var(--Gray);
+}
+
+/* Variante vom Zurück Link für einen Weg nach vorne: der Pfeil steht hinter
+   dem Text und rutscht beim Hover nach rechts statt nach links. */
+.detail-back-fwd {
+    padding: 9px 16px 9px 22px;
+}
+
+.detail-back-fwd:hover svg {
+    transform: translateX(4px);
+}
+
+.favorites-stat-panel {
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 620px;
+    margin-top: 26px;
+}
+
+.favorites-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 22px 0 30px;
+}
+
+/* Eine Kategorie mit ihrer Anzahl. Der Punkt links trägt die Kategoriefarbe,
+   die als --cat-color inline gesetzt wird. */
+.favorites-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--DarkGreen);
+    background-color: #fff;
+    border: 2px solid var(--Divider);
+    border-radius: 999px;
+    padding: 7px 8px 7px 16px;
+}
+
+.favorites-chip-dot {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background-color: var(--cat-color);
+}
+
+/* Die Anzahl sitzt als eigener Kreis am rechten Ende der Pille. */
+.favorites-chip strong {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    color: #fff;
+    background-color: var(--cat-color);
+    border-radius: 999px;
+    min-width: 28px;
+    padding: 2px 8px;
+    text-align: center;
+}
+
+/* Kategorien ohne Favoriten. Sie bleiben stehen, damit man die Lücken sieht,
+   treten aber zurück. */
+.favorites-chip.muted {
+    opacity: 0.45;
+}
+
+/* Kurze Zeile über dem Grid. Das Herz auf den Karten war vorher nur Deko,
+   darum steht hier, dass man es anklicken kann. */
+.favorites-hint {
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem;
+    color: var(--MutedGray);
+    margin-bottom: 18px;
+}
+
+/* Das Herz in der Ecke einer Favoriten Karte. Es ist ein echter Knopf und
+   nimmt den Affen von der Liste. Gleiche Farbe wie der aktive Favoriten Knopf
+   auf der Tower Detailseite.
+   Das Formular liegt über der Karte, darum z-index: die Karte ist auch
+   positioniert und kommt im HTML vorher. */
+.favorite-remove-form {
+    position: absolute;
+    top: 8px;
+    right: 9px;
+    z-index: 2;
+    /* Die Karte hebt sich beim Hover um 6px. Das Herz macht die gleiche
+       Bewegung mit, sonst bleibt es auf halber Höhe hängen. */
+    transition: transform 0.25s ease;
+}
+
+.tower-item:hover .favorite-remove-form {
+    transform: translateY(-6px);
+}
+
+.favorite-remove {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    padding: 5px;
+    border: none;
+    border-radius: 50%;
+    background-color: transparent;
+    color: #E8577A;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.favorite-remove svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+/* Normal das gefüllte Herz, beim Hover das durchgestrichene. Es ist immer nur
+   eins von beiden sichtbar. */
+.favorite-remove-off {
+    display: none;
+}
+
+.favorite-remove:hover {
+    background-color: rgba(232, 87, 122, 0.16);
+    transform: scale(1.08);
+}
+
+.favorite-remove:hover .favorite-remove-on {
+    display: none;
+}
+
+.favorite-remove:hover .favorite-remove-off {
+    display: block;
+}
+
+/* Sichtbarer Rahmen bei Bedienung mit der Tastatur. Der Knopf hat keinen
+   eigenen Rand, ohne das hier wäre nicht zu sehen, wo man steht. */
+.favorite-remove:focus-visible {
+    outline: 2px solid var(--DarkGreen);
+    outline-offset: 2px;
+    background-color: rgba(232, 87, 122, 0.16);
+}
+
+/* Der Preis unter dem Namen. Monospace, damit die Zahlen in mehreren Karten
+   untereinander gleich breit stehen. */
+.favorites-card-cost {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--MutedGray);
+    margin-top: 4px;
+}
+
+/* Zustand ohne Favoriten. Eine Karte mit Affe, Text und einem Weg zur Towers
+   Liste, statt nur einer Zeile Text wie bei .no-results. */
+.favorites-empty {
+    background-color: #fff;
+    border: 2px solid var(--Divider);
+    border-radius: 24px;
+    text-align: center;
+    padding: 44px 30px 50px;
+    margin-top: 30px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+}
+
+.favorites-empty img {
+    width: 150px;
+    height: auto;
+    margin-bottom: 14px;
+}
+
+.favorites-empty h2 {
+    font-family: 'Baloo 2', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--DarkGreen);
+    margin-bottom: 10px;
+}
+
+.favorites-empty p {
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.1rem;
+    color: var(--Gray);
+    max-width: 440px;
+    margin: 0 auto 26px;
+}
+
+/* Der Knopf stammt von der Startseite. Dort skaliert er mit der Fensterhöhe,
+   hier steht er mitten im Text und bleibt darum auf einer festen Grösse. */
+.favorites-empty-btn {
+    display: inline-block;
+    font-size: 1.15rem;
+    padding: 14px 32px;
+}
+
+.favorites-empty-btn::after {
+    bottom: 9px;
+}
+
+/* ========================================================================
+   Admin Bereich (/Admin)
+   Eigene Optik, aber mit denselben Farben und Schriften wie der Rest der
+   Seite. Flaechig weisse Panels auf dem Creme Hintergrund, Monospace fuer
+   alles, was direkt aus der Datenbank kommt (IDs, Slugs, Tabellennamen).
+   ======================================================================== */
+
+.admin-main {
+    padding-bottom: 60px;
+}
+
+.admin-container {
+    max-width: 1500px;
+}
+
+.admin-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 22px;
+}
+
+/* Kleine Zeile ueber dem Titel. Macht klar, dass man nicht mehr im
+   oeffentlichen Teil der Seite ist. */
+.admin-eyebrow {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--Gray);
+    border-bottom: 2px solid var(--Gold);
+    padding-bottom: 3px;
+    margin-bottom: 10px;
+}
+
+.admin-title {
+    margin-bottom: 6px;
+}
+
+.admin-subtitle {
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.05rem;
+    color: var(--Gray);
+}
+
+/* Reiterleiste. Gleiche Form wie die Filter Pills auf /Towers, damit es
+   nicht nach einer fremden Seite aussieht. */
+.admin-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 26px;
+    border-bottom: 2px solid var(--Divider);
+    padding-bottom: 14px;
+}
+
+.admin-tab {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--DarkGreen);
+    text-decoration: none;
+    background-color: #fff;
+    border: 2px solid var(--Divider);
+    border-radius: 10px;
+    padding: 9px 20px;
+    transition: transform 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+}
+
+.admin-tab:hover {
+    transform: translateY(-2px);
+    border-color: var(--DarkGreen);
+}
+
+.admin-tab.active {
+    background-color: var(--DarkGreen);
+    border-color: var(--DarkGreen);
+    color: var(--Gold);
+}
+
+/* Meldung nach einer Aktion, zum Beispiel "Account gespeichert".
+   Kommt per TempData und steht genau einmal da. */
+.admin-flash {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    color: var(--BtnGreenText);
+    background-color: var(--LightGreen);
+    border-left: 5px solid var(--BtnGreen);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 22px;
+}
+
+.admin-flash-error {
+    color: var(--Danger);
+    background-color: var(--DangerSoft);
+    border-left-color: var(--Danger);
+}
+
+/* Kacheln ------------------------------------------------------------- */
+
+.admin-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 28px;
+}
+
+.admin-stat {
+    display: block;
+    position: relative;
+    overflow: hidden;
+    text-decoration: none;
+    background-color: #fff;
+    border-radius: 18px;
+    padding: 24px 24px 22px 30px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Farbiger Streifen links. Die vier Kacheln benutzen die vier
+   Kategoriefarben, gesetzt per --tile-color in der View. */
+.admin-stat::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 8px;
+    background-color: var(--tile-color, var(--DarkGreen));
+}
+
+.admin-stat:not(.admin-stat-static):hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
+}
+
+.admin-stat-value {
+    display: block;
+    font-family: 'Baloo 2', sans-serif;
+    font-size: 2.6rem;
+    font-weight: 800;
+    line-height: 1.05;
+    color: var(--DarkGreen);
+}
+
+.admin-stat-label {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.76rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--Gray);
+    margin-top: 4px;
+}
+
+/* Panels -------------------------------------------------------------- */
+
+.admin-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+.admin-panel {
+    background-color: #fff;
+    border-radius: 20px;
+    padding: 26px 28px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+}
+
+.admin-panel-title {
+    font-family: 'Baloo 2', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--DarkGreen);
+    margin-bottom: 6px;
+}
+
+.admin-panel-hint {
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem;
+    color: var(--Gray);
+    margin-bottom: 16px;
+    max-width: 70ch;
+}
+
+.admin-panel-link {
+    margin-top: 18px;
+}
+
+.admin-empty {
+    font-family: 'Nunito', sans-serif;
+    color: var(--Gray);
+    padding: 24px 0;
+}
+
+/* Tabellen ------------------------------------------------------------ */
+
+/* Die Datentabellen sind breiter als der Platz auf kleinen Bildschirmen.
+   Der Wrapper scrollt darum seitlich, statt die ganze Seite zu dehnen. */
+.admin-table-wrap {
+    overflow-x: auto;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.97rem;
+    white-space: nowrap;
+}
+
+.admin-table th {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-align: left;
+    color: var(--Creme);
+    background-color: var(--DarkGreen);
+    padding: 11px 14px;
+}
+
+.admin-table th:first-child {
+    border-radius: 10px 0 0 10px;
+}
+
+.admin-table th:last-child {
+    border-radius: 0 10px 10px 0;
+}
+
+.admin-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--Divider);
+    vertical-align: middle;
+}
+
+.admin-table tbody tr:hover {
+    background-color: var(--LightGreen);
+}
+
+/* Die Zeile vom Admin Account selbst. */
+.admin-row-highlight {
+    background-color: rgba(232, 197, 126, 0.16);
+}
+
+.admin-num {
+    text-align: right;
+}
+
+.admin-mono {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.88rem;
+}
+
+.admin-table-mono td {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.86rem;
+}
+
+/* NULL ist ein Zustand, kein Wert. Darum blass und kursiv, damit man es
+   nicht mit dem Text "NULL" in einer Spalte verwechselt. */
+.admin-null {
+    color: var(--MutedGray);
+    font-style: italic;
+}
+
+.admin-cell-wide {
+    white-space: normal;
+    min-width: 220px;
+}
+
+.admin-thumb {
+    width: 38px;
+    height: 38px;
+    object-fit: contain;
+}
+
+.admin-id {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    color: var(--MutedGray);
+}
+
+/* Passwort und Sicherheitsantwort stehen in diesem Projekt als Klartext in
+   der DB. Der Admin muss sie sehen koennen, aber nicht jeder, der zufaellig
+   auf den Bildschirm schaut. Darum unscharf bis man drueberfaehrt. */
+.admin-secret {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.88rem;
+    filter: blur(4px);
+    cursor: help;
+    transition: filter 0.15s ease;
+}
+
+.admin-secret:hover {
+    filter: none;
+}
+
+.admin-badge {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--BtnGreenText);
+    background-color: var(--Gold);
+    border-radius: 6px;
+    padding: 3px 8px;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+.admin-chip {
+    display: inline-block;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #fff;
+    background-color: var(--chip-color, var(--Gray));
+    border-radius: 6px;
+    padding: 4px 10px;
+    margin-right: 4px;
+}
+
+.admin-swatch {
+    display: inline-block;
+    width: 30px;
+    height: 20px;
+    border-radius: 5px;
+    border: 1px solid var(--Divider);
+    vertical-align: middle;
+}
+
+/* Knoepfe ------------------------------------------------------------- */
+
+.admin-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 22px;
+}
+
+.admin-search {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.admin-search input {
+    font-family: 'Nunito', sans-serif;
+    font-size: 1rem;
+    color: #111;
+    background-color: #fff;
+    border: 2px solid var(--Divider);
+    border-radius: 12px;
+    padding: 11px 16px;
+    min-width: 280px;
+}
+
+.admin-search input:focus {
+    outline: none;
+    border-color: var(--DarkGreen);
+}
+
+/* Die Aktionen Spalte hat mehrere Knoepfe, jeder in seinem eigenen
+   Formular (ein POST pro Aktion). Flex haelt sie trotzdem in einer Reihe. */
+.admin-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.admin-btn {
+    display: inline-block;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 0.92rem;
+    text-decoration: none;
+    white-space: nowrap;
+    border: 2px solid transparent;
+    border-radius: 10px;
+    padding: 9px 16px;
+    cursor: pointer;
+    transition: transform 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.admin-btn:hover {
+    transform: translateY(-2px);
+}
+
+.admin-btn-primary {
+    color: var(--BtnGreenText);
+    background-color: var(--BtnGreen);
+}
+
+.admin-btn-primary:hover {
+    border-color: #000;
+}
+
+.admin-btn-edit {
+    color: #fff;
+    background-color: var(--CatBlue);
+}
+
+.admin-btn-danger {
+    color: #fff;
+    background-color: var(--Danger);
+}
+
+.admin-btn-ghost {
+    color: var(--DarkGreen);
+    background-color: #fff;
+    border-color: var(--Divider);
+}
+
+.admin-btn-ghost:hover {
+    border-color: var(--DarkGreen);
+}
+
+/* Formulare ----------------------------------------------------------- */
+
+.admin-panel-form {
+    max-width: 1000px;
+}
+
+.admin-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px 22px;
+    margin-bottom: 18px;
+}
+
+.admin-form-grid-4 {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+/* Im Grid macht schon gap den Abstand zwischen den Zeilen. Ohne das hier
+   kaeme der eigene margin der Felder nochmal dazu. */
+.admin-form-grid .admin-field {
+    margin-bottom: 0;
+}
+
+/* Bild links, Felder rechts. Das Bild ist eine Vorschau, es muss nicht
+   mitwachsen, darum eine feste Spalte. */
+.admin-form-side {
+    display: grid;
+    grid-template-columns: 170px 1fr;
+    gap: 24px;
+    align-items: start;
+}
+
+.admin-preview {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 170px;
+    background-color: var(--LightGreen);
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.admin-preview img {
+    width: 110px;
+    height: 110px;
+    object-fit: contain;
+}
+
+.admin-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 18px;
+}
+
+.admin-field label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--Gray);
+}
+
+.admin-field input,
+.admin-field select,
+.admin-field textarea {
+    font-family: 'Nunito', sans-serif;
+    font-size: 1rem;
+    color: #111;
+    background-color: #fff;
+    border: 2px solid var(--Divider);
+    border-radius: 12px;
+    padding: 12px 14px;
+    width: 100%;
+}
+
+.admin-field input:focus,
+.admin-field select:focus,
+.admin-field textarea:focus {
+    outline: none;
+    border-color: var(--DarkGreen);
+}
+
+/* Felder, die man nicht aendern darf (zum Beispiel der Admin Username),
+   sollen auch so aussehen und nicht nur nicht reagieren. */
+.admin-field input[readonly] {
+    background-color: #f5f2e8;
+    color: var(--Gray);
+    cursor: not-allowed;
+}
+
+.admin-field textarea {
+    resize: vertical;
+    line-height: 1.5;
+}
+
+.admin-field-hint {
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.86rem;
+    color: var(--MutedGray);
+}
+
+.admin-checks {
+    display: flex;
+    gap: 28px;
+    margin-bottom: 22px;
+}
+
+.admin-check {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    color: var(--DarkGreen);
+    cursor: pointer;
+}
+
+.admin-check input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--DarkGreen);
+    cursor: pointer;
+}
+
+.admin-form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    border-top: 2px solid var(--Divider);
+    padding-top: 22px;
+}
+
+/* Dashboard Listen ---------------------------------------------------- */
+
+.admin-top-list,
+.admin-user-list {
+    list-style: none;
+}
+
+.admin-top-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--Divider);
+}
+
+.admin-top-item:last-child {
+    border-bottom: none;
+}
+
+.admin-top-item img {
+    width: 42px;
+    height: 42px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.admin-top-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.admin-top-body a {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    color: #111;
+    text-decoration: none;
+}
+
+.admin-top-body a:hover {
+    text-decoration: underline;
+}
+
+/* Balken statt nur einer Zahl. Die Breite ist relativ zum ersten Platz,
+   so sieht man den Abstand auch bei kleinen Zahlen. */
+.admin-top-bar {
+    height: 8px;
+    background-color: var(--Divider);
+    border-radius: 4px;
+    margin-top: 6px;
+    overflow: hidden;
+}
+
+.admin-top-bar span {
+    display: block;
+    height: 100%;
+    background-color: var(--cat-color, var(--DarkGreen));
+    border-radius: 4px;
+}
+
+.admin-top-count {
+    font-family: 'Baloo 2', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--DarkGreen);
+    flex-shrink: 0;
+}
+
+.admin-user-list li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--Divider);
+}
+
+.admin-user-list li:last-child {
+    border-bottom: none;
+}
+
+.admin-user-list a {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    color: #111;
+    text-decoration: none;
+}
+
+.admin-user-list a:hover {
+    text-decoration: underline;
+}
+
+.admin-user-question {
+    display: block;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.86rem;
+    color: var(--MutedGray);
+    margin-top: 2px;
+}
+
+/* SQL Konsole --------------------------------------------------------- */
+
+.admin-sql {
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 0.95rem !important;
+    line-height: 1.6;
+}
+
+.admin-sql-error {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.92rem;
+    color: var(--Danger);
+    background-color: var(--DangerSoft);
+    border-left: 5px solid var(--Danger);
+    border-radius: 10px;
+    padding: 14px 18px;
+    white-space: pre-wrap;
+}
+
+/* Fertige Abfragen zum Anklicken. Spart Tippen und zeigt gleich, was in
+   der Datenbank ueberhaupt drin steht. */
+.admin-examples {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    border-top: 2px solid var(--Divider);
+    margin-top: 22px;
+    padding-top: 18px;
+}
+
+.admin-examples span {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--Gray);
+}
+
+.admin-examples a {
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--DarkGreen);
+    text-decoration: none;
+    background-color: var(--LightGreen);
+    border-radius: 8px;
+    padding: 7px 13px;
+}
+
+.admin-examples a:hover {
+    background-color: var(--Gold);
+}
+
+/* Admin Link im Hauptmenue. Soll auffallen, weil er nur dem Admin
+   angezeigt wird. */
+.nav-link-admin {
+    color: var(--Gold) !important;
+    border: 1px solid rgba(232, 197, 126, 0.5);
+    border-radius: 8px;
+    padding: 5px 12px;
+}
+
+@media (max-width: 1200px) {
+    .admin-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .admin-columns {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-form-grid-4 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 900px) {
+    .admin-form-grid,
+    .admin-form-grid-4 {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-form-side {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-search input {
+        min-width: 0;
+    }
+}
+
+
+/* ----------------------------------------------------------------------
+   Handy Menue (Burger)
+
+   Vorher standen auf schmalen Bildschirmen die Links und der Log In Knopf
+   neben der Seite und man musste seitlich scrollen. Unter 900px gibt es darum
+   statt der Leiste drei Balken, die ein Menue ueber den ganzen Bildschirm
+   oeffnen. Geschaltet wird das ueber eine versteckte Checkbox im Header
+   (_Navigation.cshtml), damit kein JavaScript noetig ist.
+   ---------------------------------------------------------------------- */
+
+/* Auf dem Desktop gibt es weder die Checkbox noch die drei Balken. display:none
+   sorgt dafuer, dass man den Schalter dort auch mit der Tastatur nicht
+   versehentlich umlegen kann. */
+.nav-toggle,
+.nav-burger {
+    display: none;
+}
+
+@media (max-width: 900px) {
+    header {
+        padding: 12px 20px;
+    }
+
+    /* Die Checkbox selbst sieht man nie. Sie bleibt aber im Layout, damit man
+       mit der Tastatur zu ihr springen kann. */
+    .nav-toggle {
+        display: block;
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .logo-group {
+        gap: 10px;
+    }
+
+    .logo-group a {
+        font-size: 1.6rem;
+    }
+
+    .logo-badge {
+        width: 44px;
+        height: 44px;
+    }
+
+    .logo-badge img {
+        width: 28px;
+        height: 28px;
+    }
+
+    /* Die drei Balken. z-index hoeher als das Menue, damit man damit auch
+       wieder schliessen kann, wenn das Menue offen ueber dem Bildschirm liegt. */
+    .nav-burger {
+        position: relative;
+        z-index: 120;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 5px;
+        width: 44px;
+        height: 44px;
+        padding: 10px;
+        border-radius: 10px;
+        border: 1px solid rgba(232, 197, 126, 0.45);
+        cursor: pointer;
+        flex-shrink: 0;
+    }
+
+    .nav-burger span {
+        display: block;
+        height: 3px;
+        width: 100%;
+        border-radius: 2px;
+        background-color: var(--Gold);
+        transition: transform 0.25s ease, opacity 0.2s ease;
+    }
+
+    /* Offen werden aus den Balken ein Kreuz. Die 8px sind genau die halbe
+       Hoehe der drei Balken samt Abstand, damit sie in der Mitte landen. */
+    .nav-toggle:checked + .nav-burger span:nth-child(1) {
+        transform: translateY(8px) rotate(45deg);
+    }
+
+    .nav-toggle:checked + .nav-burger span:nth-child(2) {
+        opacity: 0;
+    }
+
+    .nav-toggle:checked + .nav-burger span:nth-child(3) {
+        transform: translateY(-8px) rotate(-45deg);
+    }
+
+    /* Sichtbarer Rahmen, wenn man mit der Tastatur auf dem Schalter steht. */
+    .nav-toggle:focus-visible + .nav-burger {
+        outline: 2px solid var(--Gold);
+        outline-offset: 3px;
+    }
+
+    /* Das Menue selbst. Liegt fest ueber dem ganzen Bildschirm und ist
+       normalerweise ausgeblendet. */
+    nav {
+        position: fixed;
+        inset: 0;
+        z-index: 110;
+        flex-direction: column;
+        justify-content: center;
+        gap: 0;
+        padding: 90px 24px 40px;
+        background: linear-gradient(180deg, #245a41, var(--DarkGreen) 70%);
+        overflow-y: auto;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
+    }
+
+    .nav-toggle:checked ~ nav {
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+    }
+
+    .nav-links {
+        flex-direction: column;
+        gap: 0;
+        width: 100%;
+        max-width: 360px;
+        margin: 0 auto;
+    }
+
+    /* Im Vollbild Menue sind die Links breite Zeilen untereinander. */
+    nav a.nav-link {
+        display: block;
+        width: 100%;
+        padding: 18px 8px;
+        font-size: 1.6rem;
+        text-align: center;
+        border-bottom: 1px solid rgba(232, 197, 126, 0.25);
+    }
+
+    /* Der Strich von links passt bei den breiten Zeilen nicht mehr. */
+    nav a.nav-link::after {
+        display: none;
+    }
+
+    /* Der Admin Link bekommt hier keinen eigenen Rahmen mehr, sonst faellt
+       er aus der Reihe. Die goldene Schrift reicht als Unterschied. */
+    .nav-link-admin {
+        border: none;
+        border-bottom: 1px solid rgba(232, 197, 126, 0.25);
+        border-radius: 0;
+        padding: 18px 8px;
+    }
+
+    /* Die Linie zwischen Links und Konto Bereich war senkrecht. */
+    .nav-divider {
+        width: 100%;
+        max-width: 360px;
+        height: 1px;
+        margin: 28px auto 0;
+    }
+
+    .account-group {
+        flex-direction: column;
+        gap: 16px;
+        width: 100%;
+        max-width: 360px;
+        margin: 28px auto 0;
+    }
+
+    .account-badge {
+        justify-content: center;
+        width: 100%;
+        font-size: 1.2rem;
+        padding: 12px 16px;
+    }
+
+    .logout-form {
+        width: 100%;
+    }
+
+    .logout-btn {
+        width: 100%;
+        font-size: 1.15rem;
+        padding: 14px 18px;
+    }
+
+    .login-btn {
+        width: 100%;
+        max-width: 360px;
+        margin: 28px auto 0;
+        font-size: 1.25rem;
+        padding: 14px 18px;
+        text-align: center;
+    }
+
+    .login-btn::after {
+        display: none;
+    }
+
+    /* Solange das Menue offen ist, soll die Seite dahinter nicht mitscrollen. */
+    html:has(.nav-toggle:checked) {
+        overflow: hidden;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .nav-burger span,
+    nav {
+        transition: none;
+    }
 }

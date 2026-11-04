@@ -1,0 +1,89 @@
+@model MonkeyArchive.Models.AdminTowerForm
+@{
+    ViewData["Title"] = $"Edit {Model.Name}";
+    ViewData["Subtitle"] = $"Tower row #{Model.Id}";
+}
+
+<section class="admin-panel admin-panel-form">
+    <form method="post" asp-controller="Admin" asp-action="EditTower">
+        @* Die ID steht nicht im Formular zum Ändern, muss aber mit, damit das
+           UPDATE die richtige Zeile trifft. *@
+        <input type="hidden" name="Id" value="@Model.Id">
+
+        <div class="admin-form-side">
+            <div class="admin-preview">
+                <img src="~/images/monkeys/@Model.ImageFileName" alt="@Model.Name">
+            </div>
+
+            <div class="admin-form-grid">
+                <div class="admin-field">
+                    <label for="Name">Name</label>
+                    <input type="text" id="Name" name="Name" value="@Model.Name" required>
+                </div>
+
+                <div class="admin-field">
+                    <label for="Slug">Slug</label>
+                    <input type="text" id="Slug" name="Slug" value="@Model.Slug" required>
+                    <span class="admin-field-hint">Used in the URL: /Towers/Details/@Model.Slug</span>
+                </div>
+
+                <div class="admin-field">
+                    <label for="CategoryId">Category</label>
+                    <select id="CategoryId" name="CategoryId">
+                        @foreach (var category in Model.Categories)
+                        {
+                            <option value="@category.Id" selected="@(category.Id == Model.CategoryId)">@category.Name</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="admin-field">
+                    <label for="ImageFileName">Image file name</label>
+                    <input type="text" id="ImageFileName" name="ImageFileName" value="@Model.ImageFileName">
+                    <span class="admin-field-hint">File inside wwwroot/images/monkeys/</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="admin-field">
+            <label for="Description">Description</label>
+            <textarea id="Description" name="Description" rows="4">@Model.Description</textarea>
+        </div>
+
+        <div class="admin-form-grid admin-form-grid-4">
+            <div class="admin-field">
+                <label for="Cost">Cost</label>
+                <input type="number" id="Cost" name="Cost" value="@Model.Cost" required>
+            </div>
+
+            <div class="admin-field">
+                <label for="Damage">Damage</label>
+                <input type="number" id="Damage" name="Damage" value="@Model.Damage" required>
+            </div>
+
+            <div class="admin-field">
+                <label for="Pierce">Pierce</label>
+                <input type="number" id="Pierce" name="Pierce" value="@Model.Pierce" required>
+            </div>
+
+            <div class="admin-field">
+                <label for="Range">Range</label>
+                <input type="number" id="Range" name="Range" value="@(Model.Range?.ToString() ?? "")">
+                <span class="admin-field-hint">Empty = infinite range (Sniper, Dartling).</span>
+            </div>
+        </div>
+
+        <div class="admin-form-grid">
+            <div class="admin-field">
+                <label for="GameVersion">Game version</label>
+                <input type="text" id="GameVersion" name="GameVersion" value="@Model.GameVersion">
+            </div>
+        </div>
+
+        <div class="admin-form-actions">
+            <button type="submit" class="admin-btn admin-btn-primary">Save changes</button>
+            <a class="admin-btn admin-btn-ghost" asp-action="Towers">Cancel</a>
+            <a class="admin-btn admin-btn-ghost" asp-controller="Towers" asp-action="Details" asp-route-id="@Model.Slug">Open public page</a>
+        </div>
+    </form>
+</section>

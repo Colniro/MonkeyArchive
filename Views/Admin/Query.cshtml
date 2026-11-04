@@ -1,0 +1,80 @@
+@model MonkeyArchive.Models.AdminQueryResult
+@{
+    ViewData["Title"] = "SQL console";
+    ViewData["Subtitle"] = "Read-only. SELECT, SHOW, DESCRIBE, EXPLAIN and WITH only, one statement at a time.";
+}
+
+<section class="admin-panel admin-panel-form">
+    <form method="post" asp-controller="Admin" asp-action="Query">
+        <div class="admin-field">
+            <label for="sql">Query</label>
+            <textarea id="sql" name="sql" rows="5" class="admin-sql" spellcheck="false"
+                      placeholder="SELECT * FROM User">@Model.Sql</textarea>
+        </div>
+
+        <div class="admin-form-actions">
+            <button type="submit" class="admin-btn admin-btn-primary">Run query</button>
+            <a class="admin-btn admin-btn-ghost" asp-action="Query">Reset</a>
+        </div>
+    </form>
+
+    <div class="admin-examples">
+        <span>Examples:</span>
+        @* Fertige Abfragen, die man sonst jedes Mal neu tippen müsste. Die Links
+           gehen auf die GET Variante, die führt die Abfrage direkt aus. *@
+        <a asp-action="Query" asp-route-sql="SELECT u.Username, COUNT(f.TowerID) AS Favorites FROM User u LEFT JOIN FavouriteTowers f ON f.UserID = u.ID GROUP BY u.Username ORDER BY Favorites DESC">Favorites per user</a>
+        <a asp-action="Query" asp-route-sql="SELECT t.Name, t.Cost, t.Damage, t.Pierce FROM Tower t ORDER BY t.Cost DESC">Towers by cost</a>
+        <a asp-action="Query" asp-route-sql="SELECT b.Name, b.Layer, b.Rbe, b.Speed FROM Bloon b ORDER BY b.Rbe DESC">Bloons by RBE</a>
+        <a asp-action="Query" asp-route-sql="SELECT t.Name, pl.Name AS Path, up.Name AS Upgrade, up.Price FROM TowerUpgradePaths up JOIN Tower t ON up.TowerId = t.ID JOIN PathLabel pl ON up.PathLabelId = pl.ID ORDER BY up.Price DESC">Most expensive upgrades</a>
+        <a asp-action="Query" asp-route-sql="SHOW TABLES">Show tables</a>
+    </div>
+</section>
+
+@if (Model.HasRun)
+{
+    <section class="admin-panel">
+        @if (Model.Error is not null)
+        {
+            <h2 class="admin-panel-title">Error</h2>
+            <p class="admin-sql-error">@Model.Error</p>
+        }
+        else if (Model.Rows.Count == 0)
+        {
+            <h2 class="admin-panel-title">0 rows</h2>
+            <p class="admin-empty">The query ran fine but returned nothing.</p>
+        }
+        else
+        {
+            <h2 class="admin-panel-title">@Model.Rows.Count row(s)</h2>
+
+            @if (Model.Truncated)
+            {
+                <p class="admin-panel-hint">Output stops after the first 200 rows. Add a LIMIT to see a different slice.</p>
+            }
+
+            <div class="admin-table-wrap">
+                <table class="admin-table admin-table-mono">
+                    <thead>
+                        <tr>
+                            @foreach (var column in Model.Columns)
+                            {
+                                <th>@column</th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var row in Model.Rows)
+                        {
+                            <tr>
+                                @foreach (var cell in row)
+                                {
+                                    <td class="@(cell == "NULL" ? "admin-null" : "")">@cell</td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </section>
+}

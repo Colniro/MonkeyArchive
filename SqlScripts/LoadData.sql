@@ -1,5 +1,5 @@
--- Importiert die CSV Dateien in die Tabellen aus MonkeyArchive_Schema.sql.
--- Vorher einmal MonkeyArchive_Schema.sql ausführen, dieses Skript baut nur Daten rein.
+-- Importiert die CSV Dateien in die Tabellen aus CreateDB.sql.
+-- Vorher einmal CreateDB.sql ausführen, dieses Skript baut nur Daten rein.
 --
 -- LOAD DATA LOCAL INFILE braucht oft eine extra Einstellung, sonst blockt der
 -- Server das aus Sicherheitsgründen. Vor dem Ausführen einmal pruefen/setzen:
@@ -8,8 +8,8 @@
 -- und beim Verbinden mit der mysql Konsole den Flag --local-infile=1 mitgeben:
 --   mysql --local-infile=1 -u dein_user -p
 --
--- Alle Pfade unten sind relativ. Das Skript muss im selben Ordner wie die
--- CSV Dateien ausgeführt werden (oder die Pfade unten anpassen).
+-- Die Pfade unten sind absolut und zeigen auf meinen Projektordner.
+-- Liegt das Projekt woanders, muss man sie vorher anpassen.
 --
 -- Leere Werte stehen in den CSVs als \N drin (ohne Anführungszeichen).
 -- Das erkennt LOAD DATA von sich aus als NULL, da braucht es nichts extra.

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using MonkeyArchive.Helpers;
 using MonkeyArchive.Models;
 using MySqlConnector;
 
@@ -7,6 +8,7 @@ namespace MonkeyArchive.Controllers;
 // Login, Registrierung und die Favorites Liste.
 // Accounts liegen jetzt in der User Tabelle in der Datenbank, nicht mehr im Speicher.
 // Die Session speichert nur den Username vom eingeloggten Nutzer als Text.
+// Passwörter und Sicherheitsantworten stehen nur als Hash in der DB, siehe PasswordHelper.
 public class AccountController : Controller
 {
     private readonly string _connString;
@@ -44,15 +46,31 @@ public class AccountController : Controller
     [HttpPost]
     public IActionResult Login(string username, string password, string? returnUrl)
     {
+        username ??= "";
+        password ??= "";
+
         using var conn = new MySqlConnection(_connString);
         conn.Open();
 
-        using var cmd = new MySqlCommand("SELECT Password FROM User WHERE Username = @username", conn);
-        cmd.Parameters.AddWithValue("@username", username);
-        var storedPassword = cmd.ExecuteScalar() as string;
-
-        if (storedPassword is not null && storedPassword == password)
+        string? storedPassword;
+        using (var cmd = new MySqlCommand("SELECT Password FROM User WHERE Username = @username", conn))
         {
+            cmd.Parameters.AddWithValue("@username", username);
+            storedPassword = cmd.ExecuteScalar() as string;
+        }
+
+        if (storedPassword is not null && PasswordHelper.Verify(password, storedPassword, out var needsRehash))
+        {
+            // Alter Account mit Passwort im Klartext: Beim ersten Login nach der
+            // Umstellung wird das Passwort gleich als Hash neu gespeichert.
+            if (needsRehash)
+            {
+                using var updateCmd = new MySqlCommand("UPDATE User SET Password = @password WHERE Username = @username", conn);
+                updateCmd.Parameters.AddWithValue("@password", PasswordHelper.Hash(password));
+                updateCmd.Parameters.AddWithValue("@username", username);
+                updateCmd.ExecuteNonQuery();
+            }
+
             HttpContext.Session.SetString(SessionKey, username);
             return Url.IsLocalUrl(returnUrl) ? Redirect(returnUrl!) : RedirectToAction("Index", "Home");
         }
@@ -108,9 +126,9 @@ public class AccountController : Controller
             "INSERT INTO User (Username, Password, SecurityQuestion, Answer) VALUES (@username, @password, @question, @answer)", conn))
         {
             insertCmd.Parameters.AddWithValue("@username", username);
-            insertCmd.Parameters.AddWithValue("@password", password);
+            insertCmd.Parameters.AddWithValue("@password", PasswordHelper.Hash(password));
             insertCmd.Parameters.AddWithValue("@question", securityQuestion);
-            insertCmd.Parameters.AddWithValue("@answer", securityAnswer);
+            insertCmd.Parameters.AddWithValue("@answer", PasswordHelper.HashAnswer(securityAnswer));
             insertCmd.ExecuteNonQuery();
         }
 
@@ -197,7 +215,7 @@ public class AccountController : Controller
         ViewData["Username"] = username;
         ViewData["SecurityQuestion"] = question;
 
-        if (!string.Equals(storedAnswer!.Trim(), securityAnswer.Trim(), StringComparison.OrdinalIgnoreCase))
+        if (!PasswordHelper.VerifyAnswer(securityAnswer ?? "", storedAnswer!))
         {
             ViewData["Error"] = "That answer doesn't match.";
             return View();
@@ -209,9 +227,12 @@ public class AccountController : Controller
             return View();
         }
 
-        using (var updateCmd = new MySqlCommand("UPDATE User SET Password = @password WHERE Username = @username", conn))
+        // Die Antwort wird mitgespeichert. So wird eine alte Antwort im Klartext
+        // gleich zu einem Hash, bei einer schon gehashten ändert sich nichts Wichtiges.
+        using (var updateCmd = new MySqlCommand("UPDATE User SET Password = @password, Answer = @answer WHERE Username = @username", conn))
         {
-            updateCmd.Parameters.AddWithValue("@password", password);
+            updateCmd.Parameters.AddWithValue("@password", PasswordHelper.Hash(password));
+            updateCmd.Parameters.AddWithValue("@answer", PasswordHelper.HashAnswer(securityAnswer!));
             updateCmd.Parameters.AddWithValue("@username", username);
             updateCmd.ExecuteNonQuery();
         }
@@ -240,11 +261,12 @@ public class AccountController : Controller
             }
         }
 
-        // Nur die Felder, die die Kartenansicht braucht (Name/Image/Category fürs Hexagon).
-        // Beschreibung, Preis usw. werden hier nicht gebraucht, bleiben einfach auf ihrem Default.
+        // Nur die Felder, die die Seite braucht (Name/Image/Category fürs Hexagon,
+        // Cost für die Summe im Stat Panel). Beschreibung, Pierce usw. werden hier
+        // nicht gebraucht und bleiben einfach auf ihrem Default.
         var favorites = new List<Tower>();
         using (var cmd = new MySqlCommand(
-            @"SELECT t.Slug, t.Name, t.ImageFileName, tc.Name AS CategoryName
+            @"SELECT t.Slug, t.Name, t.ImageFileName, tc.Name AS CategoryName, t.Cost
               FROM FavouriteTowers f
               JOIN Tower t ON f.TowerID = t.ID
               JOIN TowerCategory tc ON t.CategoryId = tc.ID
@@ -261,11 +283,20 @@ public class AccountController : Controller
                     Slug = reader.GetString(0),
                     Name = reader.GetString(1),
                     Image = reader.GetString(2),
-                    Category = reader.GetString(3)
+                    Category = reader.GetString(3),
+                    Cost = reader.GetInt32(4)
                 });
             }
         }
 
+        // Für die Zeile "x of y monkeys starred" über dem Grid. Ohne die Zahl
+        // wüsste man nicht, wie viele es überhaupt gibt.
+        using (var cmd = new MySqlCommand("SELECT COUNT(*) FROM Tower", conn))
+        {
+            ViewData["TowerTotal"] = Convert.ToInt32(cmd.ExecuteScalar());
+        }
+
+        ViewData["Username"] = username;
         return View(favorites);
     }
 }

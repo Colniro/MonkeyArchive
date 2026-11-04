@@ -1,0 +1,78 @@
+@model List<MonkeyArchive.Models.AdminBloonForm>
+@{
+    ViewData["Title"] = "Bloons";
+    ViewData["Subtitle"] = $"{Model.Count} row(s) in the Bloon table";
+    var search = ViewData["Search"] as string ?? "";
+}
+
+<div class="admin-toolbar">
+    <form class="admin-search" method="get" asp-controller="Admin" asp-action="Bloons">
+        <input type="search" name="search" value="@search" placeholder="Search name or slug..." autocomplete="off">
+        <button type="submit" class="admin-btn admin-btn-ghost">Search</button>
+        @if (!string.IsNullOrEmpty(search))
+        {
+            <a class="admin-btn admin-btn-ghost" asp-action="Bloons">Clear</a>
+        }
+    </form>
+</div>
+
+<section class="admin-panel">
+    @if (Model.Count == 0)
+    {
+        <p class="admin-empty">No bloons match that search.</p>
+    }
+    else
+    {
+        <div class="admin-table-wrap">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th class="admin-num">ID</th>
+                        <th></th>
+                        <th>Name</th>
+                        <th>Slug</th>
+                        <th>Category</th>
+                        <th class="admin-num">Layer</th>
+                        <th class="admin-num">RBE</th>
+                        <th class="admin-num">Speed</th>
+                        <th>Flags</th>
+                        <th>Color</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var bloon in Model)
+                    {
+                        <tr>
+                            <td class="admin-num admin-mono">@bloon.Id</td>
+                            <td><img class="admin-thumb" src="~/images/bloons/@bloon.ImageFileName" alt="@bloon.Name"></td>
+                            <td><strong>@bloon.Name</strong></td>
+                            <td class="admin-mono">@bloon.Slug</td>
+                            <td><span class="admin-chip" style="--chip-color: var(--Gray)">@(bloon.Categories.FirstOrDefault()?.Name ?? "")</span></td>
+                            <td class="admin-num">@bloon.Layer</td>
+                            <td class="admin-num">@bloon.Rbe</td>
+                            <td class="admin-num">@bloon.Speed</td>
+                            <td>
+                                @if (bloon.IsCamo)
+                                {
+                                    <span class="admin-chip" style="--chip-color: var(--CatPurple)">camo</span>
+                                }
+                                @if (bloon.IsLead)
+                                {
+                                    <span class="admin-chip" style="--chip-color: var(--Gray)">lead</span>
+                                }
+                            </td>
+                            @* Kleiner Farbklecks mit dem echten Wert aus ColorHex.
+                               Bei Rainbow ist das ein ganzer CSS Farbverlauf. *@
+                            <td><span class="admin-swatch" style="background: @bloon.ColorHex" title="@bloon.ColorHex"></span></td>
+                            <td class="admin-actions">
+                                <a class="admin-btn admin-btn-edit" asp-action="EditBloon" asp-route-id="@bloon.Id">Edit</a>
+                                <a class="admin-btn admin-btn-ghost" asp-controller="Bloons" asp-action="Details" asp-route-id="@bloon.Slug">View</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</section>

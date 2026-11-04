@@ -1,0 +1,44 @@
+@{
+    ViewData["Title"] = "New account";
+    ViewData["Subtitle"] = "Inserts a row into the User table, same as a normal registration";
+    var questions = ViewData["SecurityQuestions"] as string[] ?? [];
+    var username = ViewData["Username"] as string ?? "";
+    var selectedQuestion = ViewData["SecurityQuestion"] as string ?? "";
+    var answer = ViewData["Answer"] as string ?? "";
+}
+
+<section class="admin-panel admin-panel-form">
+    <form method="post" asp-controller="Admin" asp-action="CreateUser">
+        <div class="admin-form-grid">
+            <div class="admin-field">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" value="@username" required autocomplete="off">
+            </div>
+
+            <div class="admin-field">
+                <label for="password">Password</label>
+                <input type="text" id="password" name="password" required autocomplete="off">
+            </div>
+
+            <div class="admin-field">
+                <label for="securityQuestion">Security question</label>
+                <select id="securityQuestion" name="securityQuestion" required>
+                    @foreach (var question in questions)
+                    {
+                        <option value="@question" selected="@(question == selectedQuestion)">@question</option>
+                    }
+                </select>
+            </div>
+
+            <div class="admin-field">
+                <label for="answer">Answer</label>
+                <input type="text" id="answer" name="answer" value="@answer" required autocomplete="off">
+            </div>
+        </div>
+
+        <div class="admin-form-actions">
+            <button type="submit" class="admin-btn admin-btn-primary">Create account</button>
+            <a class="admin-btn admin-btn-ghost" asp-action="Users">Cancel</a>
+        </div>
+    </form>
+</section>

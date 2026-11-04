@@ -1,0 +1,45 @@
+@{
+    // Eigenes Layout für den Admin Bereich, liegt im normalen _Layout drin.
+    // Alles, was auf jeder Admin Seite gleich ist (Kopfzeile, Reiter,
+    // Meldungen), steht nur hier und nicht in jeder einzelnen View.
+    Layout = "_Layout";
+
+    var message = ViewData["Message"] as string;
+    var error = ViewData["Error"] as string;
+    var subtitle = ViewData["Subtitle"] as string;
+}
+
+<div class="towers-page">
+    <partial name="_Navigation" />
+
+    <main class="towers-main admin-main">
+        <div class="container admin-container">
+            <div class="admin-head">
+                <div>
+                    <span class="admin-eyebrow">Admin Area</span>
+                    <h1 class="page-title admin-title">@ViewData["Title"]</h1>
+                    @if (!string.IsNullOrEmpty(subtitle))
+                    {
+                        <p class="admin-subtitle">@subtitle</p>
+                    }
+                </div>
+            </div>
+
+            <partial name="_AdminNav" />
+
+            @if (!string.IsNullOrEmpty(message))
+            {
+                <p class="admin-flash">@message</p>
+            }
+
+            @if (!string.IsNullOrEmpty(error))
+            {
+                <p class="admin-flash admin-flash-error">@error</p>
+            }
+
+            @RenderBody()
+        </div>
+    </main>
+</div>
+
+@await RenderSectionAsync("Scripts", required: false)
