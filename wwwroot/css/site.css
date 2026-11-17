@@ -1,4 +1,4 @@
-
+﻿
 :root {
     --DarkGreen: #1B4332;
     --Creme: #F4EFE1;
@@ -2931,6 +2931,7 @@ nav a.nav-link:hover::after {
         border: 1px solid rgba(232, 197, 126, 0.45);
         cursor: pointer;
         flex-shrink: 0;
+        transition: transform 0.4s cubic-bezier(0.34, 1.4, 0.5, 1), border-color 0.25s ease;
     }
 
     .nav-burger span {
@@ -2939,17 +2940,27 @@ nav a.nav-link:hover::after {
         width: 100%;
         border-radius: 2px;
         background-color: var(--Gold);
-        transition: transform 0.25s ease, opacity 0.2s ease;
+        transform-origin: center;
+        transition: transform 0.4s cubic-bezier(0.34, 1.4, 0.5, 1), opacity 0.15s ease;
     }
 
-    /* Offen werden aus den Balken ein Kreuz. Die 8px sind genau die halbe
-       Hoehe der drei Balken samt Abstand, damit sie in der Mitte landen. */
+    /* Offen werden aus den Balken ein Kreuz. Dabei dreht der ganze Schalter
+       um eine Vierteldrehung mit, so wirkt die Bewegung wie aus einem Stueck.
+       Die 8px sind genau die halbe Hoehe der drei Balken samt Abstand, damit
+       sie in der Mitte landen. */
+    .nav-toggle:checked + .nav-burger {
+        transform: rotate(90deg);
+        border-color: rgba(232, 197, 126, 0.85);
+    }
+
     .nav-toggle:checked + .nav-burger span:nth-child(1) {
         transform: translateY(8px) rotate(45deg);
     }
 
+    /* Der mittlere Balken schrumpft zur Mitte statt nur zu verblassen. */
     .nav-toggle:checked + .nav-burger span:nth-child(2) {
         opacity: 0;
+        transform: scaleX(0.2);
     }
 
     .nav-toggle:checked + .nav-burger span:nth-child(3) {
@@ -2974,16 +2985,61 @@ nav a.nav-link:hover::after {
         padding: 90px 24px 40px;
         background: linear-gradient(180deg, #245a41, var(--DarkGreen) 70%);
         overflow-y: auto;
-        opacity: 0;
         visibility: hidden;
-        transform: translateY(-10px);
-        transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
+        /* clip-path schneidet das Menue von unten her komplett weg. Beim
+           Oeffnen gibt es die Flaeche Stueck fuer Stueck frei, das sieht aus
+           wie ein Rollo, das von oben herunterfaehrt. */
+        clip-path: inset(0 0 100% 0);
+        transition: clip-path 0.45s cubic-bezier(0.22, 0.61, 0.36, 1), visibility 0.45s;
     }
 
     .nav-toggle:checked ~ nav {
-        opacity: 1;
         visibility: visible;
+        clip-path: inset(0 0 0 0);
+    }
+
+    /* Die Zeilen im Menue kommen nach dem Rollo einzeln von unten nach.
+       Geschlossen stehen sie ohne Verzoegerung sofort wieder am Anfang,
+       damit beim Schliessen nichts nachzappelt. */
+    nav a.nav-link,
+    nav .nav-divider,
+    nav .account-group,
+    nav .login-btn {
+        opacity: 0;
+        transform: translateY(16px);
+        transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .nav-toggle:checked ~ nav a.nav-link,
+    .nav-toggle:checked ~ nav .nav-divider,
+    .nav-toggle:checked ~ nav .account-group,
+    .nav-toggle:checked ~ nav .login-btn {
+        opacity: 1;
         transform: none;
+    }
+
+    /* Jede Zeile startet 60ms nach der vorherigen. Der Grundwert von 0.2s
+       wartet, bis das Rollo weit genug unten ist. */
+    .nav-toggle:checked ~ nav a.nav-link:nth-child(1) {
+        transition-delay: 0.2s;
+    }
+
+    .nav-toggle:checked ~ nav a.nav-link:nth-child(2) {
+        transition-delay: 0.26s;
+    }
+
+    .nav-toggle:checked ~ nav a.nav-link:nth-child(3) {
+        transition-delay: 0.32s;
+    }
+
+    .nav-toggle:checked ~ nav a.nav-link:nth-child(4) {
+        transition-delay: 0.38s;
+    }
+
+    .nav-toggle:checked ~ nav .nav-divider,
+    .nav-toggle:checked ~ nav .account-group,
+    .nav-toggle:checked ~ nav .login-btn {
+        transition-delay: 0.44s;
     }
 
     .nav-links {
@@ -3071,8 +3127,14 @@ nav a.nav-link:hover::after {
 }
 
 @media (prefers-reduced-motion: reduce) {
+    .nav-burger,
     .nav-burger span,
-    nav {
+    nav,
+    nav a.nav-link,
+    nav .nav-divider,
+    nav .account-group,
+    nav .login-btn {
         transition: none;
+        transition-delay: 0s;
     }
 }
